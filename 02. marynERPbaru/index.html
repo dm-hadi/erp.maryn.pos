@@ -1073,18 +1073,16 @@
                 </div>
                 
                 <!-- Kita beri background putih tegas agar saat dicapture/share tidak transparan jika pakai Dark Mode -->
-                <div id="struk-capture-area" style="background: #ffffff; color: #000000; padding: 16px; border-radius: 10px; margin-bottom: 16px; display: flex; justify-content: center;">
-                    <div id="struk-content" style="font-family: monospace; font-size: 12px; line-height: 1.6; white-space: pre-wrap; display: inline-block; text-align: left;"></div>
+                <div id="struk-capture-area" style="background: #ffffff; color: #000000; padding: 16px; border-radius: 10px; margin-bottom: 16px;">
+                    <div id="struk-content" style="font-family: monospace; font-size: 12px; line-height: 1.6; white-space: pre-wrap;"></div>
                 </div>
 
                 <!-- Tiga Tombol Utama -->
-            <div class="action-row" id="struk-main-actions">
-                <button class="btn" id="btn-action-print" style="flex: 1; font-size: 12px; padding: 10px 5px; background: #007aff; color: white; border:none; border-radius:8px; font-weight:bold;">🖨️ Cetak</button>
-                
-                <button class="btn" id="btn-action-save" style="flex: 1; font-size: 12px; padding: 10px 5px; background: #ff9500; color: white; border:none; border-radius:8px; font-weight:bold;">💾 Simpan</button>
-                
-                <button class="btn" id="btn-action-wa" style="flex: 1; font-size: 12px; padding: 10px 5px; background: #25D366; color: white; border:none; border-radius:8px; font-weight:bold;">💬 WA</button>
-            </div>
+                <div class="action-row" id="struk-main-actions">
+                    <button class="btn btn-primary" id="btn-action-print" style="flex: 1; font-size: 12px; padding: 10px 5px;">🖨️ Print</button>
+                    <button class="btn btn-primary" id="btn-action-download" style="flex: 1; font-size: 12px; padding: 10px 5px;">⬇️ Download</button>
+                    <button class="btn btn-primary" id="btn-action-share" style="flex: 1; font-size: 12px; padding: 10px 5px;">📤 Share</button>
+                </div>
 
                 <!-- Sub-Menu Download (Awalnya Sembunyi) -->
                 <div class="action-row" id="struk-dl-options" style="display: none; margin-top: 8px;">
@@ -1100,52 +1098,39 @@
     </div>
 
     <script>
-
-
         // Inisialisasi Firebase
-        // Your web app's Firebase configuration
         const firebaseConfig = {
-        apiKey: "AIzaSyasdwqsadsadG9Bpp34c8_pw",
-        authDomain: "maryasdads.com",
-        projectId: "maasdad-id",
-        storageBucket: "marynasdadrage.app",
-        messagingSenderId: "2005sdasda80",
-        appId: "1:2005039793sdasdadsab186fe01021"
-        };           
+            apiKey: "AIz123123QmfkeB1321322131234c8_pw",
+            authDomain: "mary123pp.com",
+            projectId: "maryn-id",
+            storageBucket: "mary213.app",
+            messagingSenderId: "200123012380",
+            appId: "1:20123213231c123021"
+        };            
         
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
         // Variabel awal
-        let products = []; // Kosongkan, akan diisi oleh Firebase
-        let transactions = []; // Kosongkan, akan diisi oleh Firebase
+        let products = []; 
+        let transactions = []; 
 
-
-        // 1. Data Mentah Shopee    
         const rawShopeeFees = `
         MOHON BERSABAR | MASIH DALAM PENGEMBANGAN | 0.00
         HIDOOOPPP JOKWO | HEI ANTEK ANTEK ASEEENN | 0.00
-        `;       
-        
-         // 1. Data Mentah Lazada
+        `;
         const rawLazadaFees = `
         MOHON BERSABAR | MASIH DALAM PENGEMBANGAN | 0.00
         HIDOOOPPP JOKWO | HEI ANTEK ANTEK ASEEENN | 0.00
-        `;       
-        
-         // 1. Data Mentah tiktok
+        `;
         const rawBlibliFees = `
         MOHON BERSABAR | MASIH DALAM PENGEMBANGAN | 0.00
         HIDOOOPPP JOKWO | HEI ANTEK ANTEK ASEEENN | 0.00
-        `;        
-        
-        // 1. Data Mentah tiktok
+        `;
         const rawTiktokFees = `
         MOHON BERSABAR | MASIH DALAM PENGEMBANGAN | 0.00
         HIDOOOPPP JOKWO | HEI ANTEK ANTEK ASEEENN | 0.00
         `;
-
-
 
         function parseRawFees(rawText, platformPrefix) {
             return rawText.trim().split('\n').filter(line => line.trim() !== '').map((line, index) => {
@@ -1157,7 +1142,7 @@
             });
         }
 
-        const DATA_VERSION = "1.0.2"; 
+        const DATA_VERSION = "1.0.0"; 
 
         let feeCategories = JSON.parse(localStorage.getItem("maryn_fees"));
         let savedVersion = localStorage.getItem("maryn_data_version");
@@ -1194,7 +1179,6 @@
         let currentHomeFilter = "day";
         let editingTxId = null;
         let html5QrCode = null;
-        let isScannerRunning = false; // Pelacak status kamera
 
         document.addEventListener("DOMContentLoaded", function () {
             init();
@@ -1202,8 +1186,7 @@
         });
 
         function setupEventDelegation() {
-            document.querySelector(".bottom-nav").addEventListener("click",         
-            function (e) {
+            document.querySelector(".bottom-nav").addEventListener("click", function (e) {
                 const btn = e.target.closest(".nav-item");
                 if (!btn) return;
                 const page = btn.dataset.page;
@@ -1249,31 +1232,9 @@
                         showToast("Barcode tersalin!");
                     },
                     (err) => {}
-                ).then(() => {
-                    isScannerRunning = true; // Tandai kamera sedang jalan
-                }).catch(err => showToast("Kamera tidak diizinkan."));
+                );
             });
-
-            document.getElementById("btn-tx-camera").addEventListener("click", function () {
-                document.getElementById("modal-scanner").classList.add("active");
-                if(!html5QrCode) html5QrCode = new Html5Qrcode("reader");
-                html5QrCode.start(
-                    { facingMode: "environment" },
-                    { fps: 10, qrbox: { width: 250, height: 250 } },
-                    (decodedText) => {
-                        document.getElementById("tx-search").value = decodedText;
-                        searchTxProduct();
-                        closeModal("modal-scanner");
-                        showToast("Barcode berhasil disalin!");
-                    },
-                    (errorMessage) => { }
-                ).then(() => {
-                    isScannerRunning = true; // Tandai kamera sedang jalan
-                }).catch((err) => {
-                    showToast("Gagal mengakses kamera: " + err);
-                });
-            });
-
+            
             document.getElementById("home-filters").addEventListener("click", function (e) {
                 const tab = e.target.closest(".filter-tab");
                 if (!tab) return;
@@ -1371,7 +1332,7 @@
             ).catch((err) => {
                 showToast("Gagal mengakses kamera: " + err);
             });
-            });
+        });
 
             document.getElementById("btn-add-tx-item").addEventListener("click", addTxItem);
             document.getElementById("btn-save-tx").addEventListener("click", saveTx);
@@ -1381,19 +1342,14 @@
             document.getElementById("fee-search").addEventListener("input", renderFeeList);
             
             // TOMBOL STRUK BARU
-            const btnPrint = document.getElementById("btn-action-print");
-            if (btnPrint) btnPrint.addEventListener("click", printViaWebSocket);
-            
-            //INI KODE AWAL PRINT WA 
-            // const btnWa = document.getElementById("btn-action-wa");
-            //if (btnWa) btnWa.addEventListener("click", shareKeWA);
-
-            const btnWa = document.getElementById("btn-action-wa");
-            if (btnWa) btnWa.addEventListener("click", shareStruk);
-
-            // Tambahkan baris ini di dalam fungsi setupEventDelegation()
-            const btnSave = document.getElementById("btn-action-save");
-            if (btnSave) btnSave.addEventListener("click", simpanStruk);
+            document.getElementById("btn-action-print").addEventListener("click", printViaImage);
+            document.getElementById("btn-action-download").addEventListener("click", function() {
+                const opt = document.getElementById("struk-dl-options");
+                opt.style.display = opt.style.display === "none" ? "flex" : "none";
+            });
+            document.getElementById("btn-dl-jpg").addEventListener("click", function() { downloadStruk("jpg"); });
+            document.getElementById("btn-dl-pdf").addEventListener("click", function() { downloadStruk("pdf"); });
+            document.getElementById("btn-action-share").addEventListener("click", shareStruk);
         }
 
         // ==========================================
@@ -1563,16 +1519,8 @@
         function closeModal(id) {
             const modal = document.getElementById(id);
             if(modal) modal.classList.remove("active");
-            
-            // Perbaikan Bug Scanner: Pastikan kamera dimatikan dan dibersihkan dari memori
-            if (id === "modal-scanner" && html5QrCode && isScannerRunning) {
-                html5QrCode.stop().then(() => {
-                    html5QrCode.clear(); // Bersihkan sisa frame video di layar
-                    isScannerRunning = false;
-                }).catch(err => {
-                    console.log("Gagal mematikan kamera:", err);
-                    isScannerRunning = false; // Paksa reset status
-                });
+            if(id === "modal-scanner" && html5QrCode) {
+                html5QrCode.stop().catch(err => console.log("Stop Scanner Failed", err));
             }
         }
 
@@ -1972,6 +1920,7 @@
             const lazada = document.getElementById("prod-lazada").value;
             const blibli = document.getElementById("prod-blibli").value;
             const tiktok = document.getElementById("prod-tiktok").value;
+
             const photo = document.getElementById("prod-preview-img").src || "";
             const stock = parseInt(document.getElementById("prod-stock").value) || 0;
 
@@ -1980,33 +1929,20 @@
                 return;
             }
 
-            // MUNCULKAN LOADING PADA TOMBOL
-            const btnSave = document.getElementById("btn-save-product");
-            const originalText = btnSave.innerHTML;
-            btnSave.disabled = true;
-            btnSave.innerHTML = "⏳ Menyimpan...";
-
             const productData = { 
                 barcode, name, modal, supplier, markup, 
                 shopeeFee: shopee, lazadaFee: lazada, blibliFee: blibli, tiktokFee: tiktok, 
                 photo, stock, createdAt: Date.now() 
             };
 
-            const request = editingProductId 
-                ? db.collection("products").doc(editingProductId).update(productData)
-                : db.collection("products").add(productData);
-
-            // TUNGGU SAMPAI FIREBASE SELESAI
-            request.then(() => {
-                closeModal("modal-product");
-                showToast("Berhasil disimpan ke Cloud!");
-            }).catch(err => {
-                showToast("Gagal menyimpan: Cek koneksi internet.");
-            }).finally(() => {
-                // KEMBALIKAN TOMBOL KE SEMULA
-                btnSave.disabled = false;
-                btnSave.innerHTML = originalText;
-            });
+            if (editingProductId) {
+                db.collection("products").doc(editingProductId).update(productData);
+            } else {
+                db.collection("products").add(productData);
+            }
+            
+            closeModal("modal-product");
+            showToast("Berhasil disimpan ke Cloud!");
         }
 
         function handleFileUpload(e) {
@@ -2280,12 +2216,8 @@
 
         function saveTx() {
             if (currentTxItems.length === 0) { showToast("Tambahkan item terlebih dahulu!"); return; }
-            
-            // MUNCULKAN LOADING PADA TOMBOL
             const btnSave = document.getElementById("btn-save-tx");
-            const originalText = btnSave.innerHTML;
             btnSave.disabled = true;
-            btnSave.innerHTML = "⏳ Menyimpan...";
 
             const date = document.getElementById("tx-date").value || new Date().toISOString().slice(0, 10);
             const type = document.getElementById("tx-type").value;
@@ -2294,32 +2226,24 @@
 
             const txData = { date, type, platform, items: JSON.parse(JSON.stringify(currentTxItems)), total, updatedAt: Date.now() };
 
-            const request = editingTxId
-                ? db.collection("transactions").doc(editingTxId).update(txData)
-                : (txData.createdAt = Date.now(), db.collection("transactions").add(txData));
-
-            // TUNGGU SAMPAI FIREBASE SELESAI
-            request.then(() => {
-                if(!editingTxId) updateStockFromTx(currentTxItems, type);
-                closeModal("modal-tx");
-                showToast(editingTxId ? "Transaksi diperbarui!" : "Transaksi disimpan!");
-            }).catch(err => {
-                showToast("Gagal menyimpan: Cek koneksi internet.");
-            }).finally(() => {
-                // KEMBALIKAN TOMBOL KE SEMULA
-                btnSave.disabled = false;
-                btnSave.innerHTML = originalText;
-            });
+            if (editingTxId) {
+                db.collection("transactions").doc(editingTxId).update(txData);
+                showToast("Transaksi berhasil diperbarui!");
+            } else {
+                txData.createdAt = Date.now();
+                db.collection("transactions").add(txData);
+                updateStockFromTx(currentTxItems, type);
+                showToast("Transaksi berhasil disimpan!");
+            }
+            
+            closeModal("modal-tx");
+            setTimeout(() => { btnSave.disabled = false; }, 500);
         }
 
-function saveAndPrint() {
+        function saveAndPrint() {
             if (currentTxItems.length === 0) { showToast("Tambahkan item terlebih dahulu!"); return; }
-            
-            // MUNCULKAN LOADING PADA TOMBOL
             const btnPrint = document.getElementById("btn-save-print");
-            const originalText = btnPrint.innerHTML;
             btnPrint.disabled = true;
-            btnPrint.innerHTML = "⏳ Menyiapkan Struk...";
 
             const date = document.getElementById("tx-date").value || new Date().toISOString().slice(0, 10);
             const type = document.getElementById("tx-type").value;
@@ -2328,23 +2252,19 @@ function saveAndPrint() {
 
             const txData = { date, type, platform, items: JSON.parse(JSON.stringify(currentTxItems)), total, updatedAt: Date.now() };
 
-            const request = editingTxId
-                ? db.collection("transactions").doc(editingTxId).update(txData)
-                : (txData.createdAt = Date.now(), db.collection("transactions").add(txData));
-
-            // TUNGGU SAMPAI FIREBASE SELESAI
-            request.then(() => {
-                if(!editingTxId) updateStockFromTx(currentTxItems, type);
-                closeModal("modal-tx");
-                generateStruk(txData); // Buka modal struk setelah data berhasil masuk Cloud
-                showToast("Struk disiapkan!");
-            }).catch(err => {
-                showToast("Gagal menyiapkan struk: Cek koneksi internet.");
-            }).finally(() => {
-                // KEMBALIKAN TOMBOL KE SEMULA
-                btnPrint.disabled = false;
-                btnPrint.innerHTML = originalText;
-            });
+            if (editingTxId) {
+                db.collection("transactions").doc(editingTxId).update(txData);
+                showToast("Transaksi diperbarui, struk disiapkan!");
+            } else {
+                txData.createdAt = Date.now();
+                db.collection("transactions").add(txData);
+                updateStockFromTx(currentTxItems, type);
+                showToast("Transaksi disimpan, struk disiapkan!");
+            }
+            
+            closeModal("modal-tx");
+            generateStruk(txData);
+            setTimeout(() => { btnPrint.disabled = false; }, 500);
         }
 
         function generateStruk(tx) {
@@ -2466,100 +2386,6 @@ function saveAndPrint() {
                 .then(() => { closeModal("modal-product"); showToast("Produk berhasil dihapus!"); });
             }
         }
-
-        // ==========================================
-        // FUNGSI BYPASS WEBVIEW (WEBSOCKET & WA API)
-        // ==========================================
-
-        // 1. Trik Print Langsung lewat Jalur Belakang (WebSocket RawBT)
-        function printViaWebSocket() {
-            showToast("Mengirim ke printer...");
-            const strukText = document.getElementById("struk-content").textContent;
-            
-            // Membuat koneksi rahasia langsung ke aplikasi RawBT di latar belakang
-            try {
-                const ws = new WebSocket("ws://127.0.0.1:40213/");
-                
-                ws.onopen = function() {
-                    // Jika nyambung, langsung lempar teks struknya
-                    ws.send(strukText);
-                    ws.close();
-                    showToast("Sukses! Struk sedang dicetak.");
-                };
-                
-                ws.onerror = function() {
-                    showToast("Gagal! Buka aplikasi RawBT dulu agar aktif di latar belakang.");
-                };
-            } catch (e) {
-                showToast("Sistem tidak mendukung WebSocket.");
-            }
-        }
-
-        // 2. Trik Share yang Dimaafkan oleh Android (Pakai link HTTPS Asli)
-        function shareKeWA() {
-            showToast("Membuka WhatsApp...");
-            const strukText = document.getElementById("struk-content").textContent;
-            
-            // Ubah teks struk jadi format aman untuk URL
-            const encodedText = encodeURIComponent(strukText);
-            
-            // Panggil API resmi WhatsApp (karena ini HTTPS, sistem WebView akan mengizinkannya)
-            const waLink = "https://wa.me/?text=" + encodedText;
-            
-            // Paksa buka link
-            window.location.href = waLink;
-        }
-
-        async function simpanStruk() {
-            try {
-                showToast("Menyiapkan PDF...");
-                const canvas = await getStrukCanvas();
-                const { jsPDF } = window.jspdf;
-
-                const pdf = new jsPDF({
-                    orientation: "portrait",
-                    unit: "px",
-                    format: [canvas.width, canvas.height]
-                });
-
-                pdf.addImage(canvas.toDataURL("image/jpeg", 1.0), 'JPEG', 0, 0, canvas.width, canvas.height);
-                
-                // Ganti output blob dengan DataURL (Base64)
-                const pdfData = pdf.output("datauristring"); 
-                
-                // Buat link download manual
-                const link = document.createElement("a");
-                link.href = pdfData;
-                link.download = "Struk_Maryn_" + new Date().getTime() + ".pdf";
-                link.click();
-                
-                showToast("PDF berhasil diunduh ke folder Download HP!");
-            } catch (e) {
-                console.error(e);
-                showToast("Gagal menyimpan PDF: " + e.message);
-            }
-        }
-
-        async function shareStruk() {
-            try {
-                showToast("Menyiapkan gambar...");
-                const canvas = await getStrukCanvas();
-                
-                // Ambil Base64 dari canvas
-                const imageData = canvas.toDataURL("image/jpeg", 1.0);
-
-                // Langsung buat link download agar masuk ke galeri/download
-                const link = document.createElement("a");
-                link.href = imageData;
-                link.download = "Struk_Maryn_" + new Date().getTime() + ".jpg";
-                link.click();
-
-                showToast("Gambar disimpan. Silakan buka galeri/file untuk kirim via WA.");
-            } catch (e) {
-                showToast("Gagal menyiapkan gambar: " + e.message);
-            }
-        }
-
     </script>
 </body>
 </html>
