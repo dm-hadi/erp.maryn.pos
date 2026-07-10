@@ -1,0 +1,24 @@
+{
+  "name": "Maryn POS",
+  "short_name": "Maryn",
+  "description": "Maryn POS ERP",
+  "start_url": "/erp.maryn.pos/02. marynERPbaru/",
+  "scope": "/erp.maryn.pos/02. marynERPbaru/",
+  "display": "standalone",
+  "background_color": "#f5e6ea",
+  "theme_color": "#f5e6ea",
+  "orientation": "portrait",
+
+  "icons": [
+    {
+      "src": "icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
