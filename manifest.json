@@ -1,0 +1,17 @@
+{
+  "name": "Maryn POS - Sistem Manajemen Toko",
+  "short_name": "Maryn ERP",
+  "description": "Sistem POS khusus untuk toko Maryn",
+  "start_url": "./",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#f5e6ea",
+  "icons": [
+    {
+      "src": "logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
