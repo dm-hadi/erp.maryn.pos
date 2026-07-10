@@ -438,6 +438,56 @@
                 display: block !important;
             }
         }
+
+        /* --- CSS PROMO SUPPLIER --- */
+        /* --- CSS PROMO SUPPLIER (UPDATE MIRIP E-COMMERCE) --- */
+        .promo-scroll { 
+            display: flex; overflow-x: auto; gap: 8px; padding-bottom: 8px; 
+            scroll-behavior: auto; /* Diatur JS */
+            -ms-overflow-style: none; scrollbar-width: none; /* Sembunyikan scrollbar di Firefox/IE */
+        }
+        .promo-scroll::-webkit-scrollbar { display: none; } /* Sembunyikan scrollbar di Chrome/Safari */
+        
+        .promo-card { 
+            flex: 0 0 120px; /* Ukuran lebih kecil dan pas */
+            background: #ffffff; 
+            border: 1px solid var(--border-color); 
+            border-radius: 4px; 
+            padding: 6px; 
+            display: flex; flex-direction: column; position: relative; 
+        }
+        .promo-badge { 
+            position: absolute; top: 0; left: 0; 
+            background: #ffeaef; color: var(--accent); 
+            font-size: 9px; padding: 3px 6px; 
+            border-radius: 4px 0 8px 0; font-weight: 800; z-index: 2; 
+        }
+        .promo-img-wrapper {
+            width: 100%; padding-top: 100%; /* Membuat kotak rasio 1:1 */
+            position: relative; margin-bottom: 6px;
+        }
+        .promo-img { 
+            position: absolute; top: 0; left: 0; 
+            width: 100%; height: 100%; 
+            object-fit: contain; /* Gambar tidak terpotong */
+            background: #ffffff; 
+        }
+        .promo-name { 
+            font-size: 11px; font-weight: 600; color: var(--text);
+            line-height: 1.3; height: 2.6em; /* Maksimal 2 baris teks */
+            overflow: hidden; text-overflow: ellipsis; 
+            display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; 
+            margin-bottom: 4px; 
+        }
+        .promo-price-old { font-size: 10px; text-decoration: line-through; color: var(--text-tert); margin-bottom: 2px; }
+        .promo-price-new { font-size: 14px; font-weight: 800; color: var(--danger); margin-bottom: 6px; }
+        .promo-progress { 
+            background: #ffeaef; border-radius: 10px; height: 14px; 
+            position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; 
+        }
+        .promo-progress-text { font-size: 8px; color: var(--accent); font-weight: 800; z-index: 1; }
+        .promo-progress-bar { position: absolute; left: 0; top: 0; height: 100%; background: rgba(233, 30, 99, 0.2); width: 100%; }
+
     </style>
 </head>
 <body>
@@ -487,6 +537,16 @@
                         <div class="stat-value" id="dash-net">0 Pesanan</div>
                     </div>
                 </div>
+
+                    <div class="card" id="promo-section" style="display: none; border-color: var(--accent); background: linear-gradient(to bottom right, var(--card-bg), var(--hover-bg));">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                        <div class="card-title" style="margin-bottom: 0; color: var(--accent);">⚡ Promo Supplier</div>
+                        <button class="btn btn-outline btn-sm" id="btn-all-promo" style="font-size: 10px; padding: 4px 8px; border-color: var(--accent); color: var(--accent);">Lihat Semua</button>
+                        </div>
+                        <div class="promo-scroll" id="dash-promo-list">
+                        </div>
+                    </div>
+
                 <div class="card">
                     <div class="card-title">Grafik Penjualan</div>
                     <div class="chart-area" id="chart-area">
@@ -694,7 +754,23 @@
                 <input class="input" type="number" placeholder="0" id="prod-stock" />
                 <span class="label">Supplier</span>
                 <input class="input" type="text" placeholder="Nama supplier" id="prod-supplier" />
-                                
+                
+                <div style="background: var(--hover-bg); padding: 12px; border-radius: 10px; margin: 12px 0; border: 1px dashed var(--accent);">
+                    <div style="font-size: 12px; font-weight: 800; margin-bottom: 10px; color: var(--accent);">⚡ Set Promo Supplier (Opsional)</div>
+                    <span class="label">Harga Modal Diskon (Rp)</span>
+                    <input class="input" type="number" placeholder="Kosongkan jika tidak ada promo" id="prod-promo-modal" />
+                    <div style="display: flex; gap: 10px;">
+                        <div style="flex:1;">
+                            <span class="label">Mulai Promo</span>
+                            <input class="input" type="date" id="prod-promo-start" />
+                        </div>
+                        <div style="flex:1;">
+                            <span class="label">Akhir Promo</span>
+                            <input class="input" type="date" id="prod-promo-end" />
+                        </div>
+                    </div>
+                </div>
+                
                 <span class="label">Admin Shopee</span>
                 <div style="position: relative; margin-bottom: 10px;">
                     <input class="input" type="text" id="display-shopee" placeholder="Ketik kategori Shopee..." autocomplete="off" style="margin-bottom:0;" />
@@ -879,6 +955,16 @@
         </div>
     </div>
 
+    <div class="modal-overlay" id="modal-promo-all">
+            <div class="modal">
+                <div class="modal-header">
+                    <div class="modal-title">⚡ Semua Promo Aktif</div>
+                    <button class="close-btn" data-close="modal-promo-all">&#10005;</button>
+                </div>
+                <div id="all-promo-list" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding-bottom: 20px;"></div>
+            </div>
+        </div>
+
     <script>
 
         // Pendaftaran Service Worker untuk PWA
@@ -912,6 +998,27 @@
         // Variabel awal
         let products = []; // Kosongkan, akan diisi oleh Firebase
         let transactions = []; // Kosongkan, akan diisi oleh Firebase
+
+        // Fungsi mengecek apakah Modal Promo sedang aktif hari ini
+        function getActiveModal(product) {
+            if (!product.promoModal || !product.promoStartDate || !product.promoEndDate) return product.modal;
+            
+            const now = new Date();
+            now.setHours(0, 0, 0, 0); // Nol-kan jam agar akurat per hari
+            
+            const start = new Date(product.promoStartDate); start.setHours(0, 0, 0, 0);
+            const end = new Date(product.promoEndDate); end.setHours(23, 59, 59, 999);
+            
+            if (now >= start && now <= end) return product.promoModal; // Promo Aktif!
+            return product.modal; // Promo tidak aktif, pakai modal normal
+        }
+
+        // Fungsi mengubah format tanggal YYYY-MM-DD ke DD/MM/YYYY
+        function formatTanggalPromo(dateStr) {
+            if(!dateStr) return "";
+            const d = new Date(dateStr);
+            return String(d.getDate()).padStart(2, '0') + '/' + String(d.getMonth() + 1).padStart(2, '0') + '/' + d.getFullYear();
+        }
 
 
        // 1. Data Mentah Shopee
@@ -1544,8 +1651,6 @@
         Tiket, Voucher, & Layanan|Gaming|Gaming|9.00
         Tiket, Voucher, & Layanan|E-Money|E-Money|8.25
         `;
-
-
 
         // 2. Data Mentah Lazada ==============================>
         const rawLazadaFees = `
@@ -8471,6 +8576,7 @@
             document.getElementById("dash-gross").textContent = formatRupiah(totals.netProfit);
             document.getElementById("dash-net").textContent = totals.totalOrders + " Pesanan";
             drawChart(); renderDashboardTx(); renderTopItems();
+            renderPromoCarousell();
         }
 
         function calculateTotals(filter) {
@@ -8542,6 +8648,101 @@
                 return `<div class="tx-item" style="padding:10px 12px; margin-bottom:6px;"><div class="tx-left" style="display:flex; align-items:center; gap:10px;"><span style="font-size:18px;">${medals[index]}</span><span class="tx-name" style="font-size:13px;">${escapeHtml(item.name)}</span></div><div class="tx-right"><span style="font-size:12px; font-weight:800; color:var(--text);">${item.qty} Terjual</span></div></div>`;
             }).join("");
         }
+
+let promoScrollInterval; // Variabel penyimpan animasi berjalan
+
+        function startPromoAutoScroll() {
+            const scrollEl = document.getElementById("dash-promo-list");
+            if(!scrollEl) return;
+            clearInterval(promoScrollInterval);
+            
+            // Animasi geser pelan-pelan
+            promoScrollInterval = setInterval(() => {
+                if(scrollEl.scrollLeft >= (scrollEl.scrollWidth - scrollEl.clientWidth - 1)) {
+                    scrollEl.scrollLeft = 0; // Balik ke awal kalau sudah mentok ujung
+                } else {
+                    scrollEl.scrollLeft += 1; // Kecepatan scroll (1 pixel)
+                }
+            }, 30); // Berjalan setiap 30 milidetik
+
+            // Hentikan saat pengguna menyentuh/menggeser manual
+            scrollEl.addEventListener("mouseenter", () => clearInterval(promoScrollInterval));
+            scrollEl.addEventListener("touchstart", () => clearInterval(promoScrollInterval), {passive: true});
+            
+            // Lanjut berjalan otomatis saat dilepas
+            scrollEl.addEventListener("mouseleave", startPromoAutoScroll);
+            scrollEl.addEventListener("touchend", () => {
+                setTimeout(startPromoAutoScroll, 2000); // Tunggu 2 detik sebelum jalan lagi
+            }, {passive: true});
+        }
+
+        function renderPromoCarousell() {
+            const list = document.getElementById("dash-promo-list");
+            const section = document.getElementById("promo-section");
+            if (!list || !section) return;
+
+            const now = new Date();
+            now.setHours(0,0,0,0);
+
+            const promoProducts = products.filter(p => {
+                if (!p.promoModal || !p.promoStartDate || !p.promoEndDate) return false;
+                const end = new Date(p.promoEndDate); end.setHours(23, 59, 59, 999);
+                return now <= end; 
+            }).sort((a, b) => new Date(a.promoEndDate) - new Date(b.promoEndDate)); 
+
+            if (promoProducts.length === 0) {
+                section.style.display = "none";
+                return;
+            }
+
+            section.style.display = "block";
+            
+            const renderCard = (p) => {
+                // Background abu-abu jika tidak ada gambar
+                const imgStr = p.photo ? `<img src="${p.photo}" class="promo-img">` : `<div class="promo-img" style="display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--text-quat);background:#f5f5f5;">No Image</div>`;
+                
+                // Format tgl misal: "15 Jul - 31 Jul"
+                const dStart = new Date(p.promoStartDate);
+                const startStr = String(dStart.getDate()).padStart(2, '0') + '/' + String(dStart.getMonth() + 1).padStart(2, '0');
+                const dEnd = new Date(p.promoEndDate);
+                const endStr = String(dEnd.getDate()).padStart(2, '0') + '/' + String(dEnd.getMonth() + 1).padStart(2, '0');
+                
+                return `
+                <div class="promo-card">
+                    <div class="promo-badge">PROMO</div>
+                    <div class="promo-img-wrapper">
+                        ${imgStr}
+                    </div>
+                    <div class="promo-name">${escapeHtml(p.name)}</div>
+                    <div class="promo-price-old">${formatRupiah(p.modal)}</div>
+                    <div class="promo-price-new">${formatRupiah(p.promoModal)}</div>
+                    <div class="promo-progress">
+                        <div class="promo-progress-bar"></div>
+                        <span class="promo-progress-text">⏳ ${startStr} - ${endStr}</span>
+                    </div>
+                    <div style="font-size:9px; color:var(--text-tert); margin-top:4px; display:flex; align-items:center; gap:2px;">
+                        🏢 ${escapeHtml(p.supplier || "-")}
+                    </div>
+                </div>`;
+            };
+
+            // Masukkan ke carousel Home
+            list.innerHTML = promoProducts.map(renderCard).join("");
+            
+            // Masukkan juga ke Modal "Lihat Semua"
+            const allList = document.getElementById("all-promo-list");
+            if(allList) {
+                allList.innerHTML = promoProducts.map((p) => `<div>${renderCard(p)}</div>`).join("");
+            }
+
+            // Jalankan animasi auto-scroll!
+            startPromoAutoScroll();
+        }
+        
+        // Daftarkan event listener untuk tombol lihat semua
+        document.getElementById("btn-all-promo")?.addEventListener("click", () => {
+            document.getElementById("modal-promo-all").classList.add("active");
+        });
 
         function formatDate(d) { return new Date(d).toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" }); }
         function escapeHtml(text) { const div = document.createElement("div"); div.textContent = text; return div.innerHTML; }
@@ -8649,7 +8850,7 @@
             if (!s) return 0;
             const totalPersen = (cat.fee + s.promo + s.premi) / 100;
             const totalNominal = s.proses + s.voucher;
-            const basePrice = product.modal * (1 + (product.markup / 100));
+            const basePrice = getActiveModal(product) * (1 + (product.markup / 100));
             return Math.round((basePrice + totalNominal) / (1 - totalPersen));
         }
 
@@ -8664,13 +8865,26 @@
 
         function calculateProfit(product, platform) {
             const net = calculateNetPrice(product, platform);
-            return net ? net - product.modal : 0;
+            const activeModal = getActiveModal(product);
+            return net ? net - activeModal : 0;
         }
 
         function calculatePreview() {
-            const modal = parseFloat(document.getElementById("prod-modal")?.value) || 0;
+            const rawModal = parseFloat(document.getElementById("prod-modal")?.value) || 0;
+            const promoModal = parseFloat(document.getElementById("prod-promo-modal")?.value) || 0;
+            const promoStart = document.getElementById("prod-promo-start")?.value;
+            const promoEnd = document.getElementById("prod-promo-end")?.value;
             const markup = parseFloat(document.getElementById("prod-markup")?.value) || 0;
             
+            // Logika pakai harga promo jika valid hari ini
+            let activeModal = rawModal;
+            if (promoModal && promoStart && promoEnd) {
+                const now = new Date(); now.setHours(0,0,0,0);
+                const dStart = new Date(promoStart); dStart.setHours(0,0,0,0);
+                const dEnd = new Date(promoEnd); dEnd.setHours(23,59,59,999);
+                if (now >= dStart && now <= dEnd) activeModal = promoModal;
+            }
+
             ["shopee", "lazada", "blibli", "tiktok"].forEach(platform => {
                 const feeId = document.getElementById("prod-" + platform).value;
                 const elHarga = document.getElementById("preview-" + platform + "-harga");
@@ -8678,18 +8892,18 @@
                 const elProfit = document.getElementById("preview-" + platform + "-profit");
 
                 if (!elHarga || !elHasil || !elProfit) return;
-                if (!modal || !feeId) { elHarga.textContent = elHasil.textContent = elProfit.textContent = "Rp 0"; return; }
+                if (!activeModal || !feeId) { elHarga.textContent = elHasil.textContent = elProfit.textContent = "Rp 0"; return; }
 
                 const cat = (feeCategories[platform] || []).find((f) => f.id === feeId);
                 if (!cat) return;
                 const s = settings[platform];
                 const totalPersen = (cat.fee + s.promo + s.premi) / 100;
                 const totalNominal = s.proses + s.voucher;
-                const base = modal * (1 + (markup / 100));
+                const base = activeModal * (1 + (markup / 100));
                 const sell = Math.round((base + totalNominal) / (1 - totalPersen));
                 const net = Math.round(sell - ((sell * totalPersen) + totalNominal));
 
-                elHarga.textContent = formatRupiah(sell); elHasil.textContent = formatRupiah(net); elProfit.textContent = formatRupiah(net - modal);
+                elHarga.textContent = formatRupiah(sell); elHasil.textContent = formatRupiah(net); elProfit.textContent = formatRupiah(net - activeModal);
             });
         }
 
@@ -8705,6 +8919,9 @@
             calculatePreview();
             document.getElementById("modal-product").classList.add("active");
             document.getElementById("btn-delete-product").style.display = "none";
+            document.getElementById("prod-promo-modal").value = "";
+            document.getElementById("prod-promo-start").value = "";
+            document.getElementById("prod-promo-end").value = "";
         }
 
         function editProduct(id) {
@@ -8717,6 +8934,9 @@
             document.getElementById("prod-modal").value = p.modal || "";
             document.getElementById("prod-stock").value = p.stock || 0; 
             document.getElementById("prod-supplier").value = p.supplier || "";
+            document.getElementById("prod-promo-modal").value = p.promoModal || "";
+            document.getElementById("prod-promo-start").value = p.promoStartDate || "";
+            document.getElementById("prod-promo-end").value = p.promoEndDate || "";
                         
             ["shopee", "lazada", "blibli", "tiktok"].forEach(plat => {
                 const feeId = p[plat + "Fee"];
@@ -8747,6 +8967,9 @@
             const productData = { 
                 barcode: document.getElementById("prod-barcode").value.trim(), name, modal, 
                 supplier: document.getElementById("prod-supplier").value.trim(), 
+                promoModal: parseFloat(document.getElementById("prod-promo-modal").value) || 0,
+                promoStartDate: document.getElementById("prod-promo-start").value || "",
+                promoEndDate: document.getElementById("prod-promo-end").value || "",
                 markup: parseFloat(document.getElementById("prod-markup").value) || 0, 
                 shopeeFee: document.getElementById("prod-shopee").value, lazadaFee: document.getElementById("prod-lazada").value, 
                 blibliFee: document.getElementById("prod-blibli").value, tiktokFee: document.getElementById("prod-tiktok").value, 
