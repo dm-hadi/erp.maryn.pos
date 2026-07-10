@@ -478,15 +478,25 @@
             overflow: hidden; text-overflow: ellipsis; 
             display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; 
             margin-bottom: 4px; 
+            color: #562b3d;
         }
         .promo-price-old { font-size: 10px; text-decoration: line-through; color: var(--text-tert); margin-bottom: 2px; }
         .promo-price-new { font-size: 14px; font-weight: 800; color: var(--danger); margin-bottom: 6px; }
         .promo-progress { 
-            background: #ffeaef; border-radius: 10px; height: 14px; 
+            background: #ffeaef; border-radius: 10px; height: 20px; 
             position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; 
         }
-        .promo-progress-text { font-size: 8px; color: var(--accent); font-weight: 800; z-index: 1; }
+        .promo-progress-text { font-size: 9px; color: var(--accent); font-weight: 800; z-index: 1; color: #b20047; }
         .promo-progress-bar { position: absolute; left: 0; top: 0; height: 100%; background: rgba(233, 30, 99, 0.2); width: 100%; }
+
+        /* --- KALKULATOR STYLE --- */
+        .calc-display { width: 100%; padding: 15px; font-size: 24px; text-align: right; border-radius: var(--radius-sm); border: 1px solid var(--border-color); background: var(--hover-bg); color: var(--text); margin-bottom: 12px; font-weight: 800; outline: none; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); letter-spacing: 1px; }
+        .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+        .calc-btn { padding: 14px 0; font-size: 16px; font-weight: 700; border-radius: var(--radius-sm); border: 1px solid var(--border-color); background: var(--card-bg); color: var(--text); cursor: pointer; transition: 0.1s; display: flex; align-items: center; justify-content: center; user-select: none; }
+        .calc-btn:active { transform: scale(0.92); }
+        .calc-btn.op { background: var(--hover-bg); color: var(--accent); font-weight: 800; }
+        .calc-btn.eq { background: var(--accent); color: white; }
+        .calc-btn.del { background: var(--danger); color: white; }
 
     </style>
 </head>
@@ -628,6 +638,101 @@
                         <div class="fee-sub" id="tiktok-count">0 kategori fee</div>
                     </div>
                 </div>
+
+                <!-- Tambahkan bagian ini di dalam <div id="page-fee" class="page"> -->
+                <div class="card" style="margin-top: 16px;">
+                    <div class="card-title">🧮 Kalkulator Biasa</div>
+                    <input type="text" class="calc-display" id="calc-display" placeholder="0" readonly />
+                    <div class="calc-grid">
+                        <div class="calc-btn del" onclick="clearCalc()">C</div>
+                        <div class="calc-btn op" onclick="delCalc()">DEL</div>
+                        <div class="calc-btn op" onclick="appendCalc('%')">%</div>
+                        <div class="calc-btn op" onclick="appendCalc('/')">÷</div>
+                        
+                        <div class="calc-btn" onclick="appendCalc('7')">7</div>
+                        <div class="calc-btn" onclick="appendCalc('8')">8</div>
+                        <div class="calc-btn" onclick="appendCalc('9')">9</div>
+                        <div class="calc-btn op" onclick="appendCalc('*')">×</div>
+                        
+                        <div class="calc-btn" onclick="appendCalc('4')">4</div>
+                        <div class="calc-btn" onclick="appendCalc('5')">5</div>
+                        <div class="calc-btn" onclick="appendCalc('6')">6</div>
+                        <div class="calc-btn op" onclick="appendCalc('-')">-</div>
+                        
+                        <div class="calc-btn" onclick="appendCalc('1')">1</div>
+                        <div class="calc-btn" onclick="appendCalc('2')">2</div>
+                        <div class="calc-btn" onclick="appendCalc('3')">3</div>
+                        <div class="calc-btn op" onclick="appendCalc('+')">+</div>
+                        
+                        <div class="calc-btn" style="grid-column: span 2;" onclick="appendCalc('0')">0</div>
+                        <div class="calc-btn" onclick="appendCalc('.')">.</div>
+                        <div class="calc-btn eq" onclick="calculateCalc()">=</div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">📊 Kalkulator Simulasi</div>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <div>
+                            <span class="label">Harga Awal (Rp)</span>
+                            <input class="input" type="number" id="sim-modal" value="15000" oninput="hitungSimulasi()" style="margin-bottom: 0;">
+                        </div>
+                        
+                        <div>
+                            <span class="label">Pilih Platform</span>
+                            <select class="select" id="sim-platform" onchange="resetSimAdmin()" style="margin-bottom: 0;">
+                                <option value="shopee">Shopee</option>
+                                <option value="lazada">Lazada</option>
+                                <option value="blibli">Blibli</option>
+                                <option value="tiktok">TikTok</option>
+                            </select>
+                        </div>
+                        
+                        <!-- Baris ini dibuat memanjang penuh (span 2) agar dropdownnya rapi -->
+                        <div style="grid-column: span 2;">
+                            <span class="label">Cari Kategori Admin Fee (%)</span>
+                            <div style="position: relative;">
+                                <input class="input" type="text" id="sim-search-admin" placeholder="Ketik barang (misal: beras)..." autocomplete="off" style="margin-bottom:0;" oninput="cariAdminSim()">
+                                <input type="hidden" id="sim-selected-fee" value="8.25">
+                                <div id="sim-drop-admin" style="display:none; position:absolute; top:100%; left:0; width:100%; max-height:160px; overflow-y:auto; background:var(--card-bg); border:1px solid var(--border-color); border-radius:var(--radius-sm); z-index:100; box-shadow:var(--shadow-sm);"></div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <span class="label">Biaya Proses (Rp)</span>
+                            <input class="input" type="number" id="sim-proses" value="1250" oninput="hitungSimulasi()" style="margin-bottom: 0;">
+                        </div>
+                        
+                        <div>
+                            <span class="label">Promo Xtra (%)</span>
+                            <input class="input" type="number" id="sim-promo" value="4.5" oninput="hitungSimulasi()" style="margin-bottom: 0;">
+                        </div>
+                        
+                        <div>
+                            <span class="label">Premi (%)</span>
+                            <input class="input" type="number" id="sim-premi" value="0.5" oninput="hitungSimulasi()" style="margin-bottom: 0;">
+                        </div>
+                        
+                        <div>
+                            <span class="label">Voucher (Rp)</span>
+                            <input class="input" type="number" id="sim-voucher" value="100" oninput="hitungSimulasi()" style="margin-bottom: 0;">
+                        </div>
+
+                        <div style="grid-column: span 2;">
+                            <span class="label">Markup (%)</span>
+                            <input class="input" type="number" id="sim-markup" value="10" oninput="hitungSimulasi()" style="margin-bottom: 0;">
+                        </div>
+                    </div>
+                    
+                    <div style="background: var(--hover-bg); padding: 12px; border-radius: 10px; margin-top: 15px; border: 1px dashed var(--accent);">
+                        <div style="font-size: 13px; margin-bottom: 6px; color: var(--text-sec);">Harga Jual: <b id="out-jual" style="color: var(--text); font-size: 14px;">Rp 0</b></div>
+                        <div style="font-size: 13px; margin-bottom: 6px; color: var(--text-sec);">Hasil Akhir (Saldo): <b id="out-saldo" style="color: var(--positive); font-size: 14px;">Rp 0</b></div>
+                        <div style="font-size: 13px; color: var(--text-sec);">Profit Bersih: <b id="out-profit" style="color: var(--accent); font-size: 14px;">Rp 0</b></div>
+                    </div>
+                </div>
+
+
             </div>
         </div>
 
@@ -9312,6 +9417,187 @@ let promoScrollInterval; // Variabel penyimpan animasi berjalan
                 .then(() => { closeModal("modal-product"); showToast("Produk berhasil dihapus!"); });
             }
         }
+
+
+        
+        // Kalkulator Biasa
+        function hitungBiasa() {
+            const input = document.getElementById('calc-input').value;
+            try { 
+                document.getElementById('hasil-biasa').innerText = "Hasil: " + eval(input).toLocaleString('id-ID'); 
+            } catch { 
+                document.getElementById('hasil-biasa').innerText = "Error: Cek kembali input"; 
+            }
+        }
+
+        // Simulasi Admin
+        function cariAdminSim() {
+            const filter = document.getElementById('sim-search-admin').value.toLowerCase();
+            const select = document.getElementById('sim-select-admin');
+            for (let i = 0; i < select.options.length; i++) {
+                const txt = select.options[i].text.toLowerCase();
+                select.options[i].style.display = txt.includes(filter) ? "block" : "none";
+            }
+        }
+
+        // Perhitungan Otomatis
+        function hitungSimulasi() {
+            const ha = parseFloat(document.getElementById('sim-modal').value) || 0;
+            const bp = parseFloat(document.getElementById('sim-proses').value) || 0;
+            const px = (parseFloat(document.getElementById('sim-promo').value) || 0) / 100;
+            const af = (parseFloat(document.getElementById('sim-select-admin').value) || 0) / 100;
+            const pr = (parseFloat(document.getElementById('sim-premi').value) || 0) / 100;
+            const vc = parseFloat(document.getElementById('sim-voucher').value) || 0;
+            const mu = (parseFloat(document.getElementById('sim-markup').value) || 0) / 100;
+
+            const hargaJual = Math.round(ha * (1 + mu));
+            const totalPotongan = (ha * px) + (ha * af) + (ha * pr) + vc + bp;
+            const hasilAkhir = Math.round(hargaJual - totalPotongan);
+            const profitBersih = hasilAkhir - ha;
+
+            document.getElementById('out-jual').innerText = "Rp " + hargaJual.toLocaleString('id-ID');
+            document.getElementById('out-saldo').innerText = "Rp " + hasilAkhir.toLocaleString('id-ID');
+            document.getElementById('out-profit').innerText = "Rp " + profitBersih.toLocaleString('id-ID');
+        }
+
+        // ==========================================
+        // LOGIKA KALKULATOR FEE SIMULASI
+        // ==========================================
+
+        // ==========================================
+        // LOGIKA KALKULATOR STANDAR
+        // ==========================================
+        let calcInput = "";
+
+        function updateCalcDisplay() {
+            document.getElementById('calc-display').value = calcInput || "0";
+        }
+
+        function appendCalc(val) {
+            if (calcInput === "Error") calcInput = ""; // Reset kalau error
+            calcInput += val;
+            updateCalcDisplay();
+        }
+
+        function clearCalc() {
+            calcInput = "";
+            updateCalcDisplay();
+        }
+
+        function delCalc() {
+            if (calcInput === "Error") calcInput = "";
+            calcInput = calcInput.toString().slice(0, -1);
+            updateCalcDisplay();
+        }
+
+        function calculateCalc() {
+            try {
+                if (!calcInput) return;
+                // Mengganti % menjadi /100 untuk kalkulasi
+                let formula = calcInput.replace(/%/g, '/100'); 
+                let result = eval(formula);
+                
+                // Membersihkan angka desimal yang terlalu panjang
+                if (result % 1 !== 0) {
+                    result = parseFloat(result.toFixed(6)); 
+                }
+                
+                calcInput = result.toString();
+                updateCalcDisplay();
+            } catch {
+                calcInput = "Error";
+                updateCalcDisplay();
+            }
+        }
+
+        // Reset kolom pencarian saat ganti platform (misal dari Shopee ke TikTok)
+        function resetSimAdmin() {
+            document.getElementById('sim-search-admin').value = "";
+            document.getElementById('sim-selected-fee').value = "0";
+            document.getElementById('sim-drop-admin').style.display = "none";
+            hitungSimulasi();
+        }
+
+        // Fitur Cari dari Database Raw Fee
+        function cariAdminSim() {
+            const platform = document.getElementById('sim-platform').value;
+            const query = document.getElementById('sim-search-admin').value.toLowerCase();
+            const dropdown = document.getElementById('sim-drop-admin');
+            const hiddenInput = document.getElementById('sim-selected-fee');
+            
+            // Reset nilai fee jadi 0 jika user ngetik ulang agar perhitungan menyesuaikan
+            hiddenInput.value = "0";
+            hitungSimulasi();
+
+            if (!query) {
+                dropdown.style.display = "none";
+                return;
+            }
+
+            // Mengambil data dari variabel feeCategories bawaan sistem Anda
+            const fees = feeCategories[platform] || [];
+            const filtered = fees.filter(f => f.name.toLowerCase().includes(query));
+
+            if (filtered.length === 0) {
+                dropdown.innerHTML = '<div style="padding:10px; font-size:11px; color:var(--text-tert); text-align:center;">Kategori tidak ditemukan</div>';
+            } else {
+                dropdown.innerHTML = filtered.map(f => 
+                    `<div class="sim-fee-item" data-fee="${f.fee}" data-name="${escapeHtml(f.name)}" style="padding:10px 12px; border-bottom:1px solid var(--border-color); cursor:pointer; font-size:11px; color:var(--text); line-height:1.4;"><span style="color:var(--accent); font-weight:800;">${f.fee}%</span> &middot; ${escapeHtml(f.name)}</div>`
+                ).join('');
+            }
+            dropdown.style.display = "block";
+        }
+
+        // Deteksi saat dropdown diklik (Event Delegation)
+        document.addEventListener("click", function(e) {
+            // Menangani saat user memilih kategori fee dari dropdown simulasi
+            const simItem = e.target.closest(".sim-fee-item");
+            if (simItem) {
+                document.getElementById('sim-search-admin').value = simItem.dataset.name + " (" + simItem.dataset.fee + "%)";
+                document.getElementById('sim-selected-fee').value = simItem.dataset.fee;
+                document.getElementById('sim-drop-admin').style.display = "none";
+                hitungSimulasi();
+            }
+            
+            // Sembunyikan dropdown jika klik area luar
+            const simSearch = document.getElementById('sim-search-admin');
+            const simDrop = document.getElementById('sim-drop-admin');
+            if (simSearch && simDrop && e.target !== simSearch && !simDrop.contains(e.target)) {
+                simDrop.style.display = "none";
+            }
+        });
+
+        // Perhitungan Algoritma Harga POS Maryn
+        function hitungSimulasi() {
+            const ha = parseFloat(document.getElementById('sim-modal').value) || 0;
+            const bp = parseFloat(document.getElementById('sim-proses').value) || 0;
+            const px = (parseFloat(document.getElementById('sim-promo').value) || 0) / 100;
+            const af = (parseFloat(document.getElementById('sim-selected-fee').value) || 0) / 100;
+            const pr = (parseFloat(document.getElementById('sim-premi').value) || 0) / 100;
+            const vc = parseFloat(document.getElementById('sim-voucher').value) || 0;
+            const mu = (parseFloat(document.getElementById('sim-markup').value) || 0) / 100;
+
+            // Formula POS (Sama persis dengan kalkulasi "calculateSellPrice" di sistem utama)
+            const basePrice = ha * (1 + mu);
+            const totalPersen = af + px + pr;
+            const totalNominal = bp + vc;
+
+            if (totalPersen >= 1) {
+                document.getElementById('out-jual').innerText = "Fee % terlalu tinggi!";
+                return;
+            }
+
+            const hargaJual = Math.round((basePrice + totalNominal) / (1 - totalPersen));
+            const hasilAkhir = Math.round(hargaJual - (hargaJual * totalPersen) - totalNominal);
+            const profitBersih = hasilAkhir - ha;
+
+            document.getElementById('out-jual').innerText = "Rp " + hargaJual.toLocaleString('id-ID');
+            document.getElementById('out-saldo').innerText = "Rp " + hasilAkhir.toLocaleString('id-ID');
+            document.getElementById('out-profit').innerText = "Rp " + profitBersih.toLocaleString('id-ID');
+        }
+
+        // Panggil sekali agar default value 15.000 dkk terhitung saat halaman dimuat
+        setTimeout(hitungSimulasi, 500);
     </script>
 </body>
 </html>
