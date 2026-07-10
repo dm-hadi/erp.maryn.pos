@@ -903,9 +903,7 @@
             storageBucket: "marynwqeweqege.app",
             messagingSenderId: "2005qweweew80",
             appId: "1:200qweeweqwe186fe01021"
-        };           
-
-        
+        };          
         
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
@@ -8398,7 +8396,14 @@
 
         function init() {
             const savedTheme = localStorage.getItem("maryn_theme");
-            if (savedTheme === "dark") document.documentElement.setAttribute("data-theme", "dark");
+            if (savedTheme === "dark") 
+            document.documentElement.setAttribute("data-theme", "dark");
+
+            
+            //localStorage.removeItem("maryn_fees"); 
+            //localStorage.removeItem("maryn_products");
+            //localStorage.removeItem("maryn_transactions");
+            
             loadSettingsToForm();
             setupFeeSearch();
             renderProducts();
