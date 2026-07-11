@@ -708,6 +708,51 @@
         }
         .top-count { font-size: 11px; color: var(--text-sec); font-weight: 600; }
 
+
+        /* ==============================================================
+        CSS RESPONSIVE - FIX GAP KIRI KANAN
+        ============================================================== */
+
+        /* 1. Aturan utama: Pastikan aplikasi mengisi 100% lebar layar */
+        .app, .main-container {
+            width: 100%;
+            max-width: 100%; /* Menghilangkan batasan lebar yang kaku */
+            margin: 0 auto;
+            padding: 0 10px; /* Memberi sedikit ruang napas di pinggir agar tidak menempel sekali */
+            box-sizing: border-box; /* Penting agar padding tidak menambah lebar elemen */
+        }
+
+        /* 2. Mengatur elemen agar otomatis menyesuaikan jumlah kolom */
+        /* Gunakan grid agar kartu produk atau data mengikuti lebar layar secara otomatis */
+        .content-grid {
+            display: grid;
+            /* auto-fit akan menambah jumlah kolom otomatis saat layar lebar */
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
+            gap: 15px;
+            width: 100%;
+        }
+
+        /* 3. Khusus untuk tablet/layar lebar, buat konten tetap nyaman dibaca */
+        @media (min-width: 768px) {
+            .app {
+                padding: 0 20px; /* Padding lebih besar di layar lebar */
+            }
+        }
+
+        /* 4. Pastikan elemen header/navigasi juga mengikuti lebar 100% */
+        .header, .bottom-nav, .card {
+            width: 100% !important;
+            max-width: 100% !important;
+        }
+
+
+        @media (min-width: 1200px) {
+        .stats-container {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr); /* Tetap rapi 4 kolom di PC */
+            }
+        }
+
     </style>
 </head>
 <body>
