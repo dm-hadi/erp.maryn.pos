@@ -384,7 +384,8 @@
 
         @media (max-width: 480px) {
             .app { max-width: 100%; }
-            .header, .bottom-nav { max-width: 100%; left: 0; transform: none; }
+            .header, 
+            .bottom-nav { max-width: 100%; left: 0; transform: none; }
         }
 
         /* ------------------------------------------- */
@@ -525,6 +526,7 @@
         /* 1. Aturan Dasar (HP) & Fix Konten Meluber (Blowout) */
         .app { margin: 0 auto; transition: all 0.3s ease; width: 100%; overflow-x: hidden; }
         .main { width: 100%; max-width: 100%; }
+        
         #product-list { display: grid; grid-template-columns: 1fr; gap: 10px; width: 100%; }
 
         /* Kunci utama agar kotak produk tidak rusak karena teks terlalu panjang */
@@ -545,7 +547,7 @@
             .header, .bottom-nav { max-width: 768px; width: 100%; left: 50%; transform: translateX(-50%); }
             
             /* Daftar produk otomatis jadi 2 kolom bersebelahan */
-            #product-list { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+            #product-list { grid-template-columns: repeat(2, 1fr); gap: 10px; }
             .product-item { height: 100%; margin-bottom: 0; }
             
             /* Form input transaksi jadi bersebelahan agar ringkas */
@@ -567,7 +569,7 @@
             .header, .bottom-nav { max-width: 1100px; }
             
             /* Daftar produk otomatis jadi 3 kolom */
-            #product-list { grid-template-columns: repeat(3, 1fr); gap: 16px; }
+            #product-list { grid-template-columns: repeat(3, 1fr); gap: 10px; }
             
             /* Transaksi Terbaru & Top 3 Barang di Home jadi bersebelahan */
             .dashboard-desktop-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
@@ -581,7 +583,7 @@
         @media (min-width: 1400px) {
             .app { max-width: 1300px; }
             .header, .bottom-nav { max-width: 1300px; }
-            #product-list { grid-template-columns: repeat(4, 1fr); gap: 16px; }
+            #product-list { grid-template-columns: repeat(4, 1fr); gap: 10px; }
         }
 
         /* Animasi khusus saat modal pop-up muncul di tengah layar */
@@ -8862,8 +8864,14 @@
 
         function init() {
             const savedTheme = localStorage.getItem("maryn_theme");
-            if (savedTheme === "dark") 
-            document.documentElement.setAttribute("data-theme", "dark");
+            const metaThemeColor = document.querySelector('meta[name="theme-color"]');
+
+            if (savedTheme === "dark") {
+                document.documentElement.setAttribute("data-theme", "dark");
+                metaThemeColor.setAttribute("content", "#210e15"); // Warna Dark
+            } else {
+                metaThemeColor.setAttribute("content", "#f5e6ea"); // Warna Light
+            }
 
             
             //localStorage.removeItem("maryn_fees"); 
@@ -9516,11 +9524,26 @@ let promoScrollInterval; // Variabel penyimpan animasi berjalan
             closeModal("modal-settings"); showToast("Pengaturan disimpan!"); renderProducts();
         }
 
+
         function toggleTheme() {
             const html = document.documentElement;
-            if (html.getAttribute("data-theme") === "dark") { html.removeAttribute("data-theme"); localStorage.setItem("maryn_theme", "light"); } 
-            else { html.setAttribute("data-theme", "dark"); localStorage.setItem("maryn_theme", "dark"); }
+            const metaThemeColor = document.querySelector('meta[name="theme-color"]');
+            
+            if (html.getAttribute("data-theme") === "dark") {
+                // Berpindah ke Light Mode
+                html.removeAttribute("data-theme");
+                localStorage.setItem("maryn_theme", "light");
+                // Warna background light mode Anda adalah #f5e6ea
+                metaThemeColor.setAttribute("content", "#f5e6ea");
+            } else {
+                // Berpindah ke Dark Mode
+                html.setAttribute("data-theme", "dark");
+                localStorage.setItem("maryn_theme", "dark");
+                // Warna background dark mode Anda adalah #210e15
+                metaThemeColor.setAttribute("content", "#210e15");
+            }
         }
+
 
         function renderBukuList(tab) {
             const list = document.getElementById("buku-list");
