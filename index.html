@@ -45,13 +45,13 @@
         }
 
         [data-theme="dark"] {
-            --bg: #120a0d;               
-            --card-bg: #1f1117;          
+            --bg: #361622;               
+            --card-bg: #3b1a28;          
             --text: #ffeef5;             
             --text-sec: #e0b6c8;
             --text-tert: #a37c8e;
             --text-quat: #6b4c5b;
-            --border-color: #3b1d2a;     
+            --border-color: #6b1c3e;     
             --hover-bg: #2d1420;         
             --accent: #ff80b3;           
             --danger: #ff453a;
@@ -499,6 +499,213 @@
         .calc-btn.eq { background: var(--accent); color: white; }
         .calc-btn.del { background: var(--danger); color: white; }
 
+        /* Grid dinamis untuk Modal Semua Promo */
+        .promo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 12px;
+            padding-bottom: 20px;
+        }
+        
+        /* Memaksa kartu promo di dalam grid agar tidak mengikuti aturan scroll horizontal */
+        .promo-grid > div {
+            display: flex; /* Membantu menyamakan tinggi kartu */
+        }
+        
+        .promo-grid .promo-card {
+            flex: none !important; /* Mematikan sifat bawaan flex horizontal */
+            width: 100%;
+            height: 100%;
+        }
+
+        /* ==============================================================
+        RESPONSIVE AMAN (HP, TABLET, PC) & FIX KONTEN TERPOTONG
+        ============================================================== */
+        
+        /* 1. Aturan Dasar (HP) & Fix Konten Meluber (Blowout) */
+        .app { margin: 0 auto; transition: all 0.3s ease; width: 100%; overflow-x: hidden; }
+        .main { width: 100%; max-width: 100%; }
+        #product-list { display: grid; grid-template-columns: 1fr; gap: 10px; width: 100%; }
+
+        /* Kunci utama agar kotak produk tidak rusak karena teks terlalu panjang */
+        .product-item { min-width: 0; width: 100%; }
+        .product-info { min-width: 0; flex: 1; }
+        /* Memaksa pembagian kolom seimbang dan melarang elemen memanjang */
+        .product-prices { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+        .product-prices > div { min-width: 0; }
+
+        /* 2. Saat dibuka di Tablet (Misal: iPad) */
+        @media (min-width: 600px) {
+            .app { 
+                max-width: 768px; /* Batasi lebar agar tidak melar berlebihan */
+                border-left: 1px solid var(--border-color);
+                border-right: 1px solid var(--border-color);
+                box-shadow: 0 0 20px rgba(0,0,0,0.05); 
+            }
+            .header, .bottom-nav { max-width: 768px; width: 100%; left: 50%; transform: translateX(-50%); }
+            
+            /* Daftar produk otomatis jadi 2 kolom bersebelahan */
+            #product-list { grid-template-columns: repeat(2, 1fr); gap: 12px; }
+            .product-item { height: 100%; margin-bottom: 0; }
+            
+            /* Form input transaksi jadi bersebelahan agar ringkas */
+            .tx-form-row, .fee-input-group { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+
+            /* OVERLAY MODAL RESPONSIVE (Tengah Layar) */
+            .modal-overlay { align-items: center; padding: 24px; }
+            .modal {
+                max-width: 550px;
+                border-radius: var(--radius); /* Membulatkan semua sudut */
+                max-height: 85vh;
+                animation: popInModal 0.25s ease-out;
+            }
+        }
+
+        /* 3. Saat dibuka di PC/Laptop (Layar sangat lebar) */
+        @media (min-width: 1024px) {
+            .app { max-width: 1100px; }
+            .header, .bottom-nav { max-width: 1100px; }
+            
+            /* Daftar produk otomatis jadi 3 kolom */
+            #product-list { grid-template-columns: repeat(3, 1fr); gap: 16px; }
+            
+            /* Transaksi Terbaru & Top 3 Barang di Home jadi bersebelahan */
+            .dashboard-desktop-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+            .dashboard-desktop-grid .card { margin-bottom: 0; height: 100%; }
+
+            /* Modal PC lebih lebar dan lega */
+            .modal { max-width: 650px; }
+        }
+
+        /* 4. Layar PC Lebar (TV / Monitor Besar) */
+        @media (min-width: 1400px) {
+            .app { max-width: 1300px; }
+            .header, .bottom-nav { max-width: 1300px; }
+            #product-list { grid-template-columns: repeat(4, 1fr); gap: 16px; }
+        }
+
+        /* Animasi khusus saat modal pop-up muncul di tengah layar */
+        @keyframes popInModal {
+            from { transform: scale(0.95) translateY(20px); opacity: 0; }
+            to { transform: scale(1) translateY(0); opacity: 1; }
+        }
+
+        /* ==============================================================
+           MODERNISASI KARTU TRANSAKSI (UI INVOICE CARD)
+           ============================================================== */
+        .tx-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 14px;
+            margin-bottom: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+            transition: all 0.2s ease;
+        }
+        .tx-card:hover { border-color: var(--text-quat); transform: translateY(-1px); }
+
+        .tx-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px dashed var(--border-color);
+            padding-bottom: 12px;
+        }
+        
+        .tx-badges { display: flex; gap: 6px; align-items: center; }
+        .tx-badge {
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 10px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .tx-badge.income { background: rgba(52, 199, 89, 0.15); color: var(--positive); }
+        .tx-badge.expense { background: rgba(255, 59, 48, 0.15); color: var(--danger); }
+        .tx-badge.platform { background: var(--hover-bg); color: var(--text-sec); border: 1px solid var(--border-color); }
+
+        .tx-card-body {
+            background: var(--hover-bg);
+            border-radius: 10px;
+            padding: 10px 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .tx-detail-item { display: flex; justify-content: space-between; font-size: 12px; }
+        .tx-detail-name { font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-right: 12px; }
+        .tx-detail-qty { font-weight: 800; color: var(--text-sec); flex-shrink: 0; }
+
+        .tx-card-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 4px;
+        }
+        
+        .tx-date-modern {
+            font-size: 11px;
+            color: var(--text-tert);
+            font-weight: 700;
+        }
+        
+        .tx-actions-modern { display: flex; gap: 6px; }
+        .btn-action-sm {
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 800;
+            cursor: pointer;
+            border: 1px solid var(--border-color);
+            background: var(--card-bg);
+            color: var(--text);
+            transition: 0.15s;
+        }
+        .btn-action-sm:hover { background: var(--hover-bg); }
+        .btn-action-sm.primary { background: var(--text); color: var(--bg); border-color: var(--text); }
+        .btn-action-sm.primary:hover { opacity: 0.85; }
+        .btn-action-sm.danger { color: var(--danger); border-color: rgba(255, 59, 48, 0.3); background: rgba(255, 59, 48, 0.05); }
+        .btn-action-sm.danger:hover { background: rgba(255, 59, 48, 0.15); }
+
+/* ==============================================================
+           MODERN LEADERBOARD (TOP 3 BARANG)
+           ============================================================== */
+        .leaderboard-list { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
+        
+        .top-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 12px;
+            background: var(--hover-bg);
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            transition: all 0.2s ease;
+        }
+
+        .rank-badge {
+            width: 30px; height: 30px;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: 800; font-size: 13px;
+            flex-shrink: 0;
+        }
+        .rank-1 { background: #FFD700; color: #7a5d00; }
+        .rank-2 { background: #C0C0C0; color: #5a5a5a; }
+        .rank-3 { background: #CD7F32; color: #7a4a20; }
+
+        .top-info { flex: 1; min-width: 0; }
+        .top-name { 
+            font-size: 13px; font-weight: 700; color: var(--text);
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .top-count { font-size: 11px; color: var(--text-sec); font-weight: 600; }
+
     </style>
 </head>
 <body>
@@ -564,14 +771,17 @@
                         <svg width="100%" height="140" viewBox="0 0 400 140" id="sales-chart"></svg>
                     </div>
                 </div>
-                <div class="card">
-                    <div class="card-title">Transaksi Terbaru</div>
-                    <div id="dash-tx-list"></div>
-                </div>
+
                 <div class="card">
                     <div class="card-title">🏆 Top 3 Barang Terlaris</div>
                     <div id="dash-top-items"></div>
                 </div>
+
+                <div class="card">
+                    <div class="card-title">Transaksi Terbaru</div>
+                    <div id="dash-tx-list"></div>
+                </div>
+
             </div>
 
             <div id="page-product" class="page">
@@ -693,7 +903,7 @@
                     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
                         <div>
                             <span class="label">Harga Awal (Rp)</span>
-                            <input class="input" type="number" id="sim-modal" value="15000" oninput="hitungSimulasi()" style="margin-bottom: 0;">
+                            <input class="input" type="number" id="sim-modal" placeholder="Masukkan harga Modal..." oninput="hitungSimulasi()" style="margin-bottom: 0;">
                         </div>
                         
                         <div>
@@ -1083,9 +1293,10 @@
                     <div class="modal-title">⚡ Semua Promo Aktif</div>
                     <button class="close-btn" data-close="modal-promo-all">&#10005;</button>
                 </div>
-                <div id="all-promo-list" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding-bottom: 20px;"></div>
+                <!-- Ganti baris di bawah ini -->
+                <div id="all-promo-list" class="promo-grid"></div>
             </div>
-        </div>
+    </div>
 
     <script>
 
@@ -8655,9 +8866,9 @@
             document.documentElement.setAttribute("data-theme", "dark");
 
             
-            //localStorage.removeItem("maryn_fees"); 
-            //localStorage.removeItem("maryn_products");
-            //localStorage.removeItem("maryn_transactions");
+            localStorage.removeItem("maryn_fees"); 
+            localStorage.removeItem("maryn_products");
+            localStorage.removeItem("maryn_transactions");
             
             loadSettingsToForm();
             setupFeeSearch();
@@ -8752,7 +8963,7 @@
 
         function formatRupiah(n) { return "Rp " + Math.round(n || 0).toLocaleString("id-ID"); }
 
-        function renderDashboardTx() {
+    function renderDashboardTx() {
             const list = document.getElementById("dash-tx-list");
             if (!list) return;
             const now = new Date();
@@ -8764,21 +8975,53 @@
                 return true;
             });
             const recent = filtered.sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 5); 
+            
             if (recent.length === 0) {
                 list.innerHTML = '<div style="text-align:center; color:var(--text-tert); font-size:12px; padding:10px;">Belum ada transaksi di periode ini</div>';
                 return;
             }
+            
             list.innerHTML = recent.map((tx) => {
                 const isIncome = tx.type === "penjualan";
-                const platform = tx.platform ? " . " + tx.platform : "";
-                const itemsListHtml = tx.items.map(i => `<div style="font-size:12px; color:var(--text-sec); margin-top:2px;">• ${escapeHtml(i.name)} <span style="color:var(--text-tert)">(x${i.qty})</span></div>`).join("");
-                return ('<div class="tx-item" style="align-items:flex-start;"><div class="tx-left"><span class="tx-name" style="margin-bottom:4px; display:block;">' + (isIncome ? "Penjualan" : "Belanja") + platform + '</span>' + itemsListHtml + '<span class="tx-date" style="margin-top:6px; display:block;">' + formatDate(tx.date) + '</span></div><div class="tx-right"><div class="tx-amount ' + (isIncome ? "income" : "expense") + '">' + (isIncome ? "+" : "-") + formatRupiah(tx.total) + "</div></div></div>");
+                const platformName = tx.platform ? tx.platform : "Toko / Offline";
+                
+                const itemsListHtml = tx.items.map(i => 
+                    `<div class="tx-detail-item">
+                        <span class="tx-detail-name">${escapeHtml(i.name)}</span>
+                        <span class="tx-detail-qty">x${i.qty}</span>
+                    </div>`
+                ).join("");
+
+                const platformBadgeHtml = isIncome ? `<span class="tx-badge platform">${platformName}</span>` : "";
+
+                return `
+                <div class="tx-card" style="margin-bottom: 10px;">
+                    <div class="tx-card-header">
+                        <div class="tx-badges">
+                            <span class="tx-badge ${isIncome ? 'income' : 'expense'}">${isIncome ? 'Penjualan' : 'Belanja'}</span>
+                            ${platformBadgeHtml}
+                        </div>
+                        <div class="tx-amount ${isIncome ? 'income' : 'expense'}" style="font-size: 15px;">
+                            ${isIncome ? '+' : '-'}${formatRupiah(tx.total)}
+                        </div>
+                    </div>
+                    
+                    <div class="tx-card-body">
+                        ${itemsListHtml}
+                    </div>
+                    
+                    <div class="tx-card-footer" style="padding-top: 6px;">
+                        <div class="tx-date-modern">📅 ${formatDate(tx.date)}</div>
+                    </div>
+                </div>`;
             }).join("");
         }
 
         function renderTopItems() {
             const list = document.getElementById("dash-top-items");
             if (!list) return;
+
+            // 1. Filter dan hitung jumlah barang terjual
             const now = new Date();
             const filtered = transactions.filter(tx => {
                 if (tx.type !== "penjualan") return false;
@@ -8788,14 +9031,37 @@
                 if (currentHomeFilter === "year") return txDate.getFullYear() === now.getFullYear();
                 return true;
             });
+
             const itemCounts = {};
-            filtered.forEach(tx => { tx.items.forEach(item => { itemCounts[item.name] = (itemCounts[item.name] || 0) + item.qty; }); });
-            const topItems = Object.keys(itemCounts).map(name => ({ name, qty: itemCounts[name] })).sort((a, b) => b.qty - a.qty).slice(0, 3);
-            if (topItems.length === 0) { list.innerHTML = '<div style="text-align:center; color:var(--text-tert); font-size:12px; padding:10px;">Belum ada data barang terjual</div>'; return; }
-            list.innerHTML = topItems.map((item, index) => {
-                const medals = ["🥇", "🥈", "🥉"];
-                return `<div class="tx-item" style="padding:10px 12px; margin-bottom:6px;"><div class="tx-left" style="display:flex; align-items:center; gap:10px;"><span style="font-size:18px;">${medals[index]}</span><span class="tx-name" style="font-size:13px;">${escapeHtml(item.name)}</span></div><div class="tx-right"><span style="font-size:12px; font-weight:800; color:var(--text);">${item.qty} Terjual</span></div></div>`;
-            }).join("");
+            filtered.forEach(tx => {
+                tx.items.forEach(item => {
+                    itemCounts[item.name] = (itemCounts[item.name] || 0) + parseInt(item.qty);
+                });
+            });
+
+            // 2. Sortir ambil top 3
+            const sorted = Object.entries(itemCounts)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 3);
+
+            // 3. Render ke HTML
+            if (sorted.length === 0) {
+                list.innerHTML = '<div style="text-align:center; color:var(--text-tert); font-size:12px; padding:10px;">Belum ada data barang terjual</div>';
+                return;
+            }
+
+            list.innerHTML = `<div class="leaderboard-list">` + sorted.map((item, index) => {
+                const rank = index + 1;
+                return `
+                    <div class="top-item">
+                        <div class="rank-badge rank-${rank}">${rank}</div>
+                        <div class="top-info">
+                            <div class="top-name">${escapeHtml(item[0])}</div>
+                            <div class="top-count">${item[1]} Terjual</div>
+                        </div>
+                    </div>
+                `;
+            }).join("") + `</div>`;
         }
 
 let promoScrollInterval; // Variabel penyimpan animasi berjalan
@@ -9269,11 +9535,50 @@ let promoScrollInterval; // Variabel penyimpan animasi berjalan
                 return true;
             }).sort((a, b) => new Date(b.date) - new Date(a.date));
 
+            if (filtered.length === 0) {
+                list.innerHTML = '<div style="text-align:center; color:var(--text-tert); font-size:12px; padding:20px;">Tidak ada data transaksi</div>';
+                return;
+            }
+
             list.innerHTML = filtered.map((tx) => {
                 const isIncome = tx.type === "penjualan";
-                const platform = tx.platform ? " . " + tx.platform : "";
-                const itemsListHtml = tx.items.map(i => `<div style="font-size:12px; color:var(--text-sec); margin-top:2px;">• ${escapeHtml(i.name)} <span style="color:var(--text-tert)">(x${i.qty})</span></div>`).join("");
-                return ('<div class="tx-item" style="align-items:flex-start;"><div class="tx-left"><span class="tx-name" style="margin-bottom:4px; display:block;">' + (isIncome ? "Penjualan" : "Belanja") + platform + '</span>' + itemsListHtml + '<span class="tx-date" style="margin-top:6px; display:block;">' + formatDate(tx.date) + '</span></div><div class="tx-right" style="display:flex; flex-direction:column; align-items:flex-end; gap:6px;"><div class="tx-amount ' + (isIncome ? "income" : "expense") + '">' + (isIncome ? "+" : "-") + formatRupiah(tx.total) + '</div><div style="display:flex; gap:6px; margin-top:4px;"><button class="btn btn-outline btn-sm btn-print-tx" data-id="' + tx.id + '" style="padding:4px 8px; font-size:10px;">Buka Struk</button><button class="btn btn-outline btn-sm btn-edit-tx" data-id="' + tx.id + '" style="padding:4px 8px; font-size:10px;">Edit</button><button class="btn btn-danger btn-sm btn-delete-tx" data-id="' + tx.id + '" style="padding:4px 8px; font-size:10px;">Hapus</button></div></div></div>');
+                const platformName = tx.platform ? tx.platform : "Toko / Offline";
+                
+                // Menyusun daftar item barang ke dalam kotak rapi
+                const itemsListHtml = tx.items.map(i => 
+                    `<div class="tx-detail-item">
+                        <span class="tx-detail-name">${escapeHtml(i.name)}</span>
+                        <span class="tx-detail-qty">x${i.qty}</span>
+                    </div>`
+                ).join("");
+
+                const platformBadgeHtml = isIncome ? `<span class="tx-badge platform">${platformName}</span>` : "";
+
+                return `
+                <div class="tx-card">
+                    <div class="tx-card-header">
+                        <div class="tx-badges">
+                            <span class="tx-badge ${isIncome ? 'income' : 'expense'}">${isIncome ? 'Penjualan' : 'Belanja'}</span>
+                            ${platformBadgeHtml}
+                        </div>
+                        <div class="tx-amount ${isIncome ? 'income' : 'expense'}" style="font-size: 15px;">
+                            ${isIncome ? '+' : '-'}${formatRupiah(tx.total)}
+                        </div>
+                    </div>
+                    
+                    <div class="tx-card-body">
+                        ${itemsListHtml}
+                    </div>
+                    
+                    <div class="tx-card-footer">
+                        <div class="tx-date-modern">📅 ${formatDate(tx.date)}</div>
+                        <div class="tx-actions-modern">
+                            ${isIncome ? `<button class="btn-action-sm primary btn-print-tx" data-id="${tx.id}">Buka Struk</button>` : `<button class="btn-action-sm primary btn-print-tx" data-id="${tx.id}">Buka Nota</button>`}
+                            <button class="btn-action-sm btn-edit-tx" data-id="${tx.id}">Edit</button>
+                            <button class="btn-action-sm danger btn-delete-tx" data-id="${tx.id}">Hapus</button>
+                        </div>
+                    </div>
+                </div>`;
             }).join("");
         }
 
