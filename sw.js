@@ -10,6 +10,6 @@ self.addEventListener('activate', (e) => {
     console.log('[Service Worker] Aktif');
 });
 
-self.addEventListener('fetch', (e) => {
+// self.addEventListener('fetch', (e) => {
     // Membiarkan aplikasi mengambil data dari internet secara normal
-});
+//--- });
