@@ -579,14 +579,30 @@
                     <button class="btn btn-outline" id="btn-import-csv">&#128229; Import</button>
                     <button class="btn btn-outline" id="btn-export-csv">&#128228; Export</button>
                 </div>
-                <input type="text" class="search-box" placeholder="Cari produk..." id="product-search" />
-                <select class="select" id="product-sort">
-                    <option value="newest">Terbaru</option>
-                    <option value="oldest">Terlama</option>
-                    <option value="az">A - Z</option>
-                    <option value="za">Z - A</option>
-                </select>
+                
+                <div style="display: flex; gap: 8px; margin-bottom: 10px;">
+                    <input type="text" class="search-box" placeholder="Cari produk..." id="product-search" style="margin-bottom: 0;" />
+                    <select class="select" id="product-sort" style="width: auto; margin-bottom: 0;">
+                        <option value="newest">Terbaru</option>
+                        <option value="oldest">Terlama</option>
+                        <option value="az">A - Z</option>
+                        <option value="za">Z - A</option>
+                    </select>
+                </div>
+
+                <!-- Info Total Produk -->
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding: 0 4px; font-size: 12px; font-weight: 700; color: var(--text-sec);">
+                    <div id="product-total-info">Total: 0 Produk</div>
+                </div>
+
                 <div id="product-list"></div>
+
+                <!-- Navigasi Halaman (Paginasi) -->
+                <div id="product-pagination" style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px; display: none;">
+                    <button class="btn btn-outline btn-sm" id="btn-prev-page" style="padding: 8px 16px;">&laquo; Prev</button>
+                    <span id="page-indicator" style="font-size: 11px; font-weight: 800; color: var(--text-sec);">Hal 1 / 1</span>
+                    <button class="btn btn-outline btn-sm" id="btn-next-page" style="padding: 8px 16px;">Next &raquo;</button>
+                </div>
             </div>
 
             <div id="page-buku" class="page">
@@ -1102,6 +1118,8 @@
 
         // Variabel awal
         let products = []; // Kosongkan, akan diisi oleh Firebase
+        let currentProductPage = 1;
+        const productsPerPage = 100;
         let transactions = []; // Kosongkan, akan diisi oleh Firebase
 
         // Fungsi mengecek apakah Modal Promo sedang aktif hari ini
@@ -8515,6 +8533,31 @@
             
             const btnWa = document.getElementById("btn-action-wa");
             if (btnWa) btnWa.addEventListener("click", shareOtomatisPilihAplikasi);
+
+            // Navigasi Paginasi Produk
+            document.getElementById("btn-prev-page").addEventListener("click", () => {
+                if (currentProductPage > 1) {
+                    currentProductPage--;
+                    renderProducts();
+                    window.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll ke atas saat ganti halaman
+                }
+            });
+
+            document.getElementById("btn-next-page").addEventListener("click", () => {
+                currentProductPage++;
+                renderProducts();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+
+            // Reset ke halaman 1 saat user mencari atau menyortir produk
+            document.getElementById("product-search").addEventListener("input", () => {
+                currentProductPage = 1;
+                renderProducts();
+            });
+            document.getElementById("product-sort").addEventListener("change", () => {
+                currentProductPage = 1;
+                renderProducts();
+            });
         }
 
         // ==========================================
@@ -8903,17 +8946,59 @@ let promoScrollInterval; // Variabel penyimpan animasi berjalan
 
         function renderProducts() {
             const list = document.getElementById("product-list");
+            const paginationDiv = document.getElementById("product-pagination");
+            const prevBtn = document.getElementById("btn-prev-page");
+            const nextBtn = document.getElementById("btn-next-page");
+            const pageIndicator = document.getElementById("page-indicator");
+            const totalInfo = document.getElementById("product-total-info");
+
             if (!list) return;
             const search = (document.getElementById("product-search")?.value || "").toLowerCase();
             const sort = document.getElementById("product-sort")?.value || "newest";
             
+            // 1. Filter Data Berdasarkan Pencarian
             let filtered = products.filter((p) => p.name.toLowerCase().includes(search) || (p.barcode || "").toLowerCase().includes(search));
+            
+            // 2. Sorting Data
             if (sort === "az") filtered.sort((a, b) => a.name.localeCompare(b.name));
             if (sort === "za") filtered.sort((a, b) => b.name.localeCompare(a.name));
             if (sort === "newest") filtered.sort((a, b) => b.createdAt - a.createdAt);
             if (sort === "oldest") filtered.sort((a, b) => a.createdAt - b.createdAt);
 
-            list.innerHTML = filtered.map((p) => {
+            // 3. Update Teks "Total Produk"
+            if (totalInfo) {
+                if (search) {
+                    totalInfo.innerHTML = `Ditemukan: <b style="color: var(--accent)">${filtered.length}</b> dari <b style="color: var(--text)">${products.length}</b> total produk`;
+                } else {
+                    totalInfo.innerHTML = `Total Keseluruhan: <b style="color: var(--text)">${products.length} Produk</b>`;
+                }
+            }
+
+            // 4. Logika Paginasi (Maksimal 100 per halaman)
+            const totalPages = Math.ceil(filtered.length / productsPerPage) || 1;
+            if (currentProductPage > totalPages) currentProductPage = totalPages;
+
+            if (paginationDiv) {
+                paginationDiv.style.display = totalPages > 1 ? "flex" : "none";
+                pageIndicator.textContent = `Halaman ${currentProductPage} / ${totalPages}`;
+                
+                // Disable/Enable tombol
+                prevBtn.disabled = currentProductPage === 1;
+                nextBtn.disabled = currentProductPage === totalPages;
+                prevBtn.style.opacity = currentProductPage === 1 ? "0.4" : "1";
+                nextBtn.style.opacity = currentProductPage === totalPages ? "0.4" : "1";
+            }
+
+            // Memotong array menjadi per 100 data sesuai halaman
+            const paginatedProducts = filtered.slice((currentProductPage - 1) * productsPerPage, currentProductPage * productsPerPage);
+
+            if (paginatedProducts.length === 0) {
+                list.innerHTML = '<div style="text-align:center; color:var(--text-tert); font-size:12px; padding:20px;">Produk tidak ditemukan</div>';
+                return;
+            }
+
+            // 5. Tampilkan ke HTML
+            list.innerHTML = paginatedProducts.map((p) => {
                 const pricesHtml = [];
                 ["shopee", "lazada", "blibli", "tiktok"].forEach(platform => {
                     const sellPrice = calculateSellPrice(p, platform);
