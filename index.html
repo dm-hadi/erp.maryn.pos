@@ -117,7 +117,7 @@
         }
         .brand {
             font-weight: 800;
-            font-size: 18px;
+            font-size: 25px;
             letter-spacing: -0.5px;
         }
         .gear-btn, .theme-btn {
@@ -137,7 +137,7 @@
 
         .main {
             flex: 1;
-            padding: 72px 16px 90px 16px;
+            padding: 72px 5px 85px 5px;
             overflow-y: auto;
         }
 
@@ -527,7 +527,7 @@
         .app { margin: 0 auto; transition: all 0.3s ease; width: 100%; overflow-x: hidden; }
         .main { width: 100%; max-width: 100%; }
         
-        #product-list { display: grid; grid-template-columns: 1fr; gap: 10px; width: 100%; }
+        #product-list { display: grid; grid-template-columns: 1fr; gap: 5px; width: 100%; }
 
         /* Kunci utama agar kotak produk tidak rusak karena teks terlalu panjang */
         .product-item { min-width: 0; width: 100%; }
@@ -547,7 +547,7 @@
             .header, .bottom-nav { max-width: 768px; width: 100%; left: 50%; transform: translateX(-50%); }
             
             /* Daftar produk otomatis jadi 2 kolom bersebelahan */
-            #product-list { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+            #product-list { grid-template-columns: repeat(2, 1fr); gap: 5px; }
             .product-item { height: 100%; margin-bottom: 0; }
             
             /* Form input transaksi jadi bersebelahan agar ringkas */
@@ -569,7 +569,7 @@
             .header, .bottom-nav { max-width: 1100px; }
             
             /* Daftar produk otomatis jadi 3 kolom */
-            #product-list { grid-template-columns: repeat(3, 1fr); gap: 10px; }
+            #product-list { grid-template-columns: repeat(3, 1fr); gap: 5px; }
             
             /* Transaksi Terbaru & Top 3 Barang di Home jadi bersebelahan */
             .dashboard-desktop-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
@@ -583,7 +583,7 @@
         @media (min-width: 1400px) {
             .app { max-width: 1300px; }
             .header, .bottom-nav { max-width: 1300px; }
-            #product-list { grid-template-columns: repeat(4, 1fr); gap: 10px; }
+            #product-list { grid-template-columns: repeat(4, 1fr); gap: 5px; }
         }
 
         /* Animasi khusus saat modal pop-up muncul di tengah layar */
@@ -735,7 +735,7 @@
         /* 3. Khusus untuk tablet/layar lebar, buat konten tetap nyaman dibaca */
         @media (min-width: 768px) {
             .app {
-                padding: 0 20px; /* Padding lebih besar di layar lebar */
+                padding: 0 10px; /* Padding lebih besar di layar lebar */
             }
         }
 
