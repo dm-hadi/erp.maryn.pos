@@ -11,60 +11,74 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
     
     <title>Maryn POS</title>
-    <meta name="theme-color" content="#f5e6ea">
+    <meta name="theme-color" content="#fcf4f7">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="mobile-web-app-capable" content="yes">
     <link rel="apple-touch-icon" href="icon-512.png"> <link rel="manifest" href="manifest.json">
 
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
         :root {
-            --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,"Helvetica Neue", Arial, sans-serif;
-            --bg: #f5e6ea;                
+            /* MODERN LIGHT MODE */
+            --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            --bg: #fdf5f7;                
             --card-bg: #ffffff;          
-            --text: #381c28;             
+            --text: #1a0b12;             
             --text-sec: #6b3e54;         
-            --text-tert: #8f6579;        
-            --text-quat: #b897a6;
-            --border-color: #eac1cf;     
-            --hover-bg: #fae1e9;         
-            --accent: #e91e63;           
+            --text-tert: #9e7587;        
+            --text-quat: #c2a3b2;
+            --border-color: rgba(234, 193, 207, 0.4);     
+            --hover-bg: #fff0f4;         
+            --accent: #ff3377; /* Soft Vibrant Pink */           
+            --accent-glow: rgba(255, 51, 119, 0.3);
             --danger: #ff3b30;
             --positive: #34c759;
             --warning: #ff9500;
-            --chart1: #d81b60;           
-            --chart2: #f06292;           
-            --chart3: #ad1457;           
+            
+            --chart1: #ff3377;            
+            --chart2: #ff70a6;            
+            --chart3: #d81b60;            
             --chart4: #ba68c8;
             --chart5: #8e8e93;
             
-            --radius: 14px;
-            --radius-sm: 10px;
-            --shadow: 0 2px 10px rgba(184, 88, 118, 0.15); 
-            --shadow-lg: 0 8px 32px rgba(184, 88, 118, 0.25);
+            --radius: 24px;
+            --radius-sm: 16px;
+            --radius-xs: 10px;
+            
+            --shadow-sm: 0 4px 15px rgba(255, 51, 119, 0.05);
+            --shadow: 0 10px 30px rgba(255, 51, 119, 0.08); 
+            --shadow-lg: 0 20px 40px rgba(255, 51, 119, 0.12);
+            --glow: 0 0 0 transparent; /* No glow in light mode by default */
         }
 
         [data-theme="dark"] {
-            --bg: #361622;               
-            --card-bg: #3b1a28;          
-            --text: #ffeef5;             
-            --text-sec: #e0b6c8;
-            --text-tert: #a37c8e;
+            /* MODERN DARK MODE (NEON GLOW) */
+            --bg: #0d0508;                
+            --card-bg: #170a10;          
+            --text: #ffffff;             
+            --text-sec: #ffb3c6;
+            --text-tert: #cc8099;
             --text-quat: #6b4c5b;
-            --border-color: #6b1c3e;     
-            --hover-bg: #2d1420;         
-            --accent: #ff80b3;           
+            --border-color: rgba(255, 51, 119, 0.2); /* Glowing border */     
+            --hover-bg: #241018;         
+            --accent: #ff2a7a; /* Neon Pink */           
+            --accent-glow: rgba(255, 42, 122, 0.6);
             --danger: #ff453a;
             --positive: #30d158;
             --warning: #ff9f0a;
-            --chart1: #ff80b3;           
-            --chart2: #ff4081;           
-            --chart3: #f48fb1;           
-            --chart4: #e040fb;           
+            
+            --chart1: #ff2a7a;            
+            --chart2: #ff4081;            
+            --chart3: #f48fb1;            
+            --chart4: #e040fb;            
             --chart5: #8e8e93;
             
-            --shadow: 0 2px 15px rgba(255, 128, 179, 0.15);
-            --shadow-lg: 0 8px 32px rgba(255, 128, 179, 0.35);
+            --shadow-sm: 0 4px 15px rgba(0, 0, 0, 0.4);
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+            --shadow-lg: 0 20px 50px rgba(0, 0, 0, 0.8);
+            --glow: 0 0 15px var(--accent-glow);
         }
 
         * {
@@ -78,6 +92,7 @@
             background: var(--bg);
             color: var(--text);
             min-height: 100vh;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
         button, input, select, textarea {
             font: inherit;
@@ -93,6 +108,7 @@
             position: relative;
         }
 
+        /* GLASSMORPHISM HEADER */
         .header {
             position: fixed;
             top: 0;
@@ -101,14 +117,18 @@
             width: 100%;
             max-width: 480px;
             z-index: 100;
-            background: var(--card-bg);
+            background: rgba(255, 255, 255, 0.75);
             border-bottom: 1px solid var(--border-color);
-            padding: 10px 16px;
+            padding: 12px 20px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            transition: background-color 0.3s ease;
+        }
+        [data-theme="dark"] .header {
+            background: rgba(23, 10, 16, 0.75);
         }
         .header-left {
             display: flex;
@@ -117,30 +137,39 @@
         }
         .brand {
             font-weight: 800;
-            font-size: 25px;
+            font-size: 24px;
             letter-spacing: -0.5px;
+            text-shadow: var(--glow);
         }
         .gear-btn, .theme-btn {
-            width: 36px;
-            height: 36px;
-            border-radius: 10px;
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-sm);
             border: 1px solid var(--border-color);
-            background: transparent;
+            background: var(--card-bg);
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.3s ease;
             color: var(--text-sec);
+            box-shadow: var(--shadow-sm);
         }
-        .gear-btn:hover, .theme-btn:hover { background: var(--hover-bg); }
+        .gear-btn:hover, .theme-btn:hover { 
+            background: var(--hover-bg); 
+            transform: translateY(-2px);
+            box-shadow: var(--glow);
+            color: var(--accent);
+            border-color: var(--accent);
+        }
 
         .main {
             flex: 1;
-            padding: 72px 5px 85px 5px;
+            padding: 85px 12px 95px 12px; /* Diberi ruang bernapas lebih */
             overflow-y: auto;
         }
 
+        /* GLASSMORPHISM BOTTOM NAV */
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -149,237 +178,352 @@
             width: 100%;
             max-width: 480px;
             z-index: 100;
-            background: var(--card-bg);
+            background: rgba(255, 255, 255, 0.85);
             border-top: 1px solid var(--border-color);
             display: flex;
             justify-content: space-around;
-            padding: 8px 0 16px 0;
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            padding: 12px 8px 24px 8px; /* Lebih rounded di bawah */
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            box-shadow: 0 -10px 30px rgba(0,0,0,0.03);
+            border-radius: 30px 30px 0 0;
+        }
+        [data-theme="dark"] .bottom-nav {
+            background: rgba(23, 10, 16, 0.85);
+            box-shadow: 0 -10px 30px rgba(0,0,0,0.5);
         }
         .nav-item {
             flex: 1;
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 4px;
-            padding: 4px;
+            gap: 6px;
+            padding: 8px;
             cursor: pointer;
             border: none;
             background: transparent;
             color: var(--text-tert);
-            transition: all 0.2s;
+            transition: all 0.3s ease;
             font-size: 11px;
-            font-weight: 600;
+            font-weight: 700;
+            border-radius: var(--radius-sm);
         }
-        .nav-item.active, .nav-item.active .nav-icon { color: var(--text); }
-        .nav-icon { width: 24px; height: 24px; color: var(--text-tert); }
+        .nav-item:hover {
+            color: var(--text-sec);
+        }
+        .nav-item.active { 
+            color: var(--accent); 
+            text-shadow: var(--glow);
+        }
+        .nav-icon { 
+            width: 24px; 
+            height: 24px; 
+            color: currentColor; 
+            transition: all 0.3s ease;
+        }
+        .nav-item.active .nav-icon {
+            filter: drop-shadow(0 0 8px var(--accent-glow));
+            transform: translateY(-2px);
+        }
 
+        /* MODERN CARDS */
         .card {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
             border-radius: var(--radius);
-            padding: 16px;
-            margin-bottom: 12px;
+            padding: 20px;
+            margin-bottom: 16px;
             box-shadow: var(--shadow);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        [data-theme="dark"] .card {
+            border: 1px solid rgba(255, 42, 122, 0.15);
+        }
+        .card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
         }
         .card-title {
-            font-size: 14px;
-            font-weight: 700;
-            margin-bottom: 12px;
+            font-size: 16px;
+            font-weight: 800;
+            margin-bottom: 16px;
             color: var(--text);
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
+        /* STATS GRID */
         .stats-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin-bottom: 16px;
+            gap: 12px;
+            margin-bottom: 20px;
         }
         .stat-card {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
-            border-radius: var(--radius);
-            padding: 14px;
+            border-radius: var(--radius-sm);
+            padding: 16px;
             text-align: left;
             position: relative;
             overflow: hidden;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s ease;
+        }
+        [data-theme="dark"] .stat-card {
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .stat-card:hover {
+            box-shadow: var(--glow);
+            transform: translateY(-2px);
         }
         .stat-card::before {
             content: "";
             position: absolute;
-            top: 0; left: 0; right: 0; height: 3px;
-            border-radius: var(--radius) var(--radius) 0 0;
+            top: 0; left: 0; right: 0; height: 4px;
+            border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+            box-shadow: var(--glow);
         }
         .stat-card.sales::before { background: #007aff; }
         .stat-card.buy::before { background: #ff3b30; }
-        .stat-card.gross::before { background: #34c759; }
+        .stat-card.gross::before { background: var(--accent); }
         .stat-card.net::before { background: #af52de; }
+        
         .stat-label {
-            font-size: 11px;
+            font-size: 12px;
             color: var(--text-tert);
-            font-weight: 600;
-            margin-bottom: 6px;
+            font-weight: 700;
+            margin-bottom: 8px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
         .stat-value {
-            font-size: 18px;
+            font-size: 20px;
             font-weight: 800;
             color: var(--text);
             font-variant-numeric: tabular-nums;
+            text-shadow: var(--glow);
         }
 
+        /* MODERN FILTER TABS */
         .filter-tabs {
             display: flex;
-            gap: 6px;
-            margin-bottom: 16px;
-            background: var(--hover-bg);
-            padding: 4px;
-            border-radius: var(--radius-sm);
+            gap: 8px;
+            margin-bottom: 20px;
+            background: var(--card-bg);
+            padding: 6px;
+            border-radius: 20px;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-color);
         }
         .filter-tab {
             flex: 1;
-            padding: 8px 0;
+            padding: 10px 0;
             border: none;
-            border-radius: 8px;
+            border-radius: 14px;
             background: transparent;
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--text-sec);
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .filter-tab.active {
-            background: var(--card-bg);
-            color: var(--text);
-            box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
-        }
-
-        .btn {
-            padding: 10px 16px;
-            border-radius: var(--radius-sm);
-            border: none;
             font-size: 13px;
             font-weight: 700;
+            color: var(--text-tert);
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.3s ease;
+        }
+        .filter-tab.active {
+            background: var(--hover-bg);
+            color: var(--accent);
+            box-shadow: var(--glow);
+            border: 1px solid var(--border-color);
+        }
+        [data-theme="dark"] .filter-tab.active {
+            background: rgba(255, 42, 122, 0.15);
+            border-color: var(--accent);
+        }
+
+        /* BUTTONS */
+        .btn {
+            padding: 12px 20px;
+            border-radius: var(--radius-sm);
+            border: none;
+            font-size: 14px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.3s ease;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 6px;
+            gap: 8px;
         }
-        .btn-primary { background: var(--text); color: var(--bg); }
-        .btn-primary:hover { opacity: 0.85; }
-        .btn-outline { background: transparent; border: 1px solid var(--border-color); color: var(--text); }
-        .btn-outline:hover { background: var(--hover-bg); }
-        .btn-danger { background: var(--danger); color: white; }
-        .btn-sm { padding: 6px 10px; font-size: 11px; }
+        /* Changed primary btn to accent pink */
+        .btn-primary { 
+            background: var(--accent); 
+            color: #ffffff; 
+            box-shadow: var(--shadow-sm);
+        }
+        .btn-primary:hover { 
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px var(--accent-glow);
+            filter: brightness(1.1);
+        }
+        .btn-outline { 
+            background: var(--card-bg); 
+            border: 1px solid var(--border-color); 
+            color: var(--text); 
+            box-shadow: var(--shadow-sm);
+        }
+        .btn-outline:hover { 
+            background: var(--hover-bg); 
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+        .btn-danger { background: var(--danger); color: white; box-shadow: 0 4px 15px rgba(255, 59, 48, 0.3); }
+        .btn-sm { padding: 8px 12px; font-size: 12px; border-radius: var(--radius-xs); }
 
+        /* INPUTS */
         .search-box, .input, .select {
             width: 100%;
-            padding: 10px 12px;
+            padding: 14px 16px;
             border-radius: var(--radius-sm);
             border: 1px solid var(--border-color);
-            background: var(--card-bg);
-            font-size: 13px;
+            background: var(--bg);
+            font-size: 14px;
+            font-weight: 500;
             color: var(--text);
             outline: none;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
+            transition: all 0.3s ease;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.02);
         }
-        .search-box { padding: 10px 14px; margin-bottom: 12px; }
-        .search-box:focus, .input:focus, .select:focus { border-color: var(--text); }
+        [data-theme="dark"] .search-box, [data-theme="dark"] .input, [data-theme="dark"] .select {
+            background: var(--card-bg);
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .search-box:focus, .input:focus, .select:focus { 
+            border-color: var(--accent); 
+            box-shadow: 0 0 0 4px var(--accent-glow);
+        }
         .label {
-            font-size: 11px;
-            font-weight: 600;
+            font-size: 12px;
+            font-weight: 700;
             color: var(--text-tert);
-            margin-bottom: 4px;
+            margin-bottom: 6px;
             display: block;
             text-transform: uppercase;
-            letter-spacing: 0.3px;
+            letter-spacing: 0.5px;
         }
 
+        /* PRODUCT ITEMS */
         .product-item {
-            display: flex; gap: 12px; padding: 12px; border: 1px solid var(--border-color); border-radius: var(--radius-sm);
-            margin-bottom: 8px; background: var(--card-bg); align-items: center; cursor: pointer; transition: all 0.2s;
+            display: flex; gap: 14px; padding: 16px; border: 1px solid var(--border-color); border-radius: var(--radius-sm);
+            margin-bottom: 12px; background: var(--card-bg); align-items: center; cursor: pointer; transition: all 0.3s ease;
+            box-shadow: var(--shadow-sm);
         }
-        .product-item:hover { background: var(--hover-bg); }
+        .product-item:hover { 
+            background: var(--hover-bg); 
+            transform: translateY(-2px);
+            border-color: var(--accent);
+            box-shadow: var(--glow);
+        }
         .product-img {
-            width: 52px; height: 52px; border-radius: 10px; object-fit: cover; background: var(--hover-bg);
+            width: 64px; height: 64px; border-radius: 14px; object-fit: cover; background: var(--bg);
             display: flex; align-items: center; justify-content: center; color: var(--text-quat); font-size: 10px; flex-shrink: 0; border: 1px solid var(--border-color);
         }
         .product-info { flex: 1; min-width: 0; }
-        .product-name { font-size: 13px; font-weight: 700; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .product-meta { font-size: 11px; color: var(--text-tert); margin-top: 2px; }
-        .product-prices { display: flex; gap: 8px; margin-top: 4px; flex-wrap: wrap; }
+        .product-name { font-size: 15px; font-weight: 800; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; margin-bottom: 4px; }
+        .product-meta { font-size: 12px; color: var(--text-tert); font-weight: 500;}
+        .product-prices { display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
 
+        /* TRANSACTION ITEMS */
         .tx-item {
-            display: flex; justify-content: space-between; align-items: center; padding: 12px;
-            border: 1px solid var(--border-color); border-radius: var(--radius-sm); margin-bottom: 8px; background: var(--card-bg);
+            display: flex; justify-content: space-between; align-items: center; padding: 16px;
+            border: 1px solid var(--border-color); border-radius: var(--radius-sm); margin-bottom: 10px; background: var(--card-bg);
+            box-shadow: var(--shadow-sm); transition: all 0.3s ease;
         }
-        .tx-left { display: flex; flex-direction: column; gap: 2px; }
-        .tx-name { font-size: 13px; font-weight: 700; }
-        .tx-date { font-size: 11px; color: var(--text-tert); }
+        .tx-item:hover { transform: translateX(4px); border-color: var(--accent); }
+        .tx-left { display: flex; flex-direction: column; gap: 4px; }
+        .tx-name { font-size: 14px; font-weight: 800; }
+        .tx-date { font-size: 12px; color: var(--text-tert); font-weight: 500; }
         .tx-right { text-align: right; }
-        .tx-amount { font-size: 14px; font-weight: 800; }
+        .tx-amount { font-size: 16px; font-weight: 800; text-shadow: var(--glow); }
         .tx-amount.income { color: var(--positive); }
         .tx-amount.expense { color: var(--danger); }
 
+        /* FEE HEADERS */
         .fee-header {
-            display: flex; align-items: center; gap: 10px; padding: 14px 16px; border: 1px solid var(--border-color); border-radius: var(--radius-sm);
-            margin-bottom: 10px; background: var(--card-bg); cursor: pointer; transition: all 0.2s;
+            display: flex; align-items: center; gap: 14px; padding: 16px; border: 1px solid var(--border-color); border-radius: var(--radius-sm);
+            margin-bottom: 12px; background: var(--card-bg); cursor: pointer; transition: all 0.3s ease;
+            box-shadow: var(--shadow-sm);
         }
-        .fee-header:hover { background: var(--hover-bg); }
-        .fee-logo-img { width: 36px; height: 36px; border-radius: 8px; object-fit: contain; background: #ffffff00; padding: 4px; margin-right: 10px; }
-        .fee-title { font-size: 14px; font-weight: 700; }
-        .fee-sub { font-size: 11px; color: var(--text-tert); }
+        .fee-header:hover { 
+            background: var(--hover-bg); 
+            transform: translateY(-2px);
+            border-color: var(--accent);
+            box-shadow: var(--glow);
+        }
+        .fee-logo-img { width: 44px; height: 44px; border-radius: 12px; object-fit: contain; background: #ffffff; padding: 6px; margin-right: 4px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        .fee-title { font-size: 16px; font-weight: 800; margin-bottom: 2px;}
+        .fee-sub { font-size: 12px; color: var(--text-tert); font-weight: 600;}
 
+        /* MODALS */
         .modal-overlay {
-            position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.4); z-index: 200; display: none; align-items: flex-end; justify-content: center;
+            position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.6); z-index: 200; display: none; align-items: flex-end; justify-content: center;
+            backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
         }
         .modal-overlay.active { display: flex; }
         .modal {
-            background: var(--card-bg); width: 100%; max-width: 480px; border-radius: var(--radius) var(--radius) 0 0;
-            max-height: 85vh; overflow-y: auto; padding: 20px 16px 20px 16px; animation: slideUp 0.25s ease;
+            background: var(--bg); width: 100%; max-width: 480px; border-radius: 32px 32px 0 0;
+            max-height: 90vh; overflow-y: auto; padding: 24px 20px 30px 20px; animation: slideUp 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 -10px 40px rgba(0,0,0,0.2);
         }
-        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
-        .modal-title { font-size: 16px; font-weight: 800; }
-        .close-btn { width: 32px; height: 32px; border-radius: 8px; border: 1px solid var(--border-color); background: transparent; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text-sec); }
+        [data-theme="dark"] .modal {
+            border-top: 1px solid rgba(255, 42, 122, 0.2);
+        }
+        @keyframes slideUp { from { transform: translateY(100%); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .modal-title { font-size: 18px; font-weight: 800; color: var(--text); }
+        .close-btn { width: 36px; height: 36px; border-radius: 12px; border: 1px solid var(--border-color); background: var(--card-bg); cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text-sec); transition: 0.3s; box-shadow: var(--shadow-sm); }
+        .close-btn:hover { background: var(--hover-bg); color: var(--accent); transform: rotate(90deg); border-color: var(--accent); }
 
-        .setting-section { margin-bottom: 20px; }
-        .setting-section-title { font-size: 13px; font-weight: 700; margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
-        .fee-input-group { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .setting-section { margin-bottom: 24px; background: var(--card-bg); padding: 16px; border-radius: var(--radius-sm); border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); }
+        .setting-section-title { font-size: 14px; font-weight: 800; margin-bottom: 12px; display: flex; align-items: center; gap: 10px; color: var(--text); }
+        .fee-input-group { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 
-        .tx-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-        .item-list { margin: 12px 0; }
-        .item-row { display: flex; justify-content: space-between; align-items: center; padding: 10px; border: 1px solid var(--border-color); border-radius: var(--radius-sm); margin-bottom: 6px; background: var(--hover-bg); }
-        .item-row-name { font-size: 12px; font-weight: 600; }
-        .item-row-qty { font-size: 11px; color: var(--text-tert); }
-        .item-row-price { font-size: 12px; font-weight: 700; }
+        .tx-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .item-list { margin: 16px 0; }
+        .item-row { display: flex; justify-content: space-between; align-items: center; padding: 14px; border: 1px solid var(--border-color); border-radius: var(--radius-sm); margin-bottom: 10px; background: var(--card-bg); box-shadow: var(--shadow-sm); transition: 0.2s; }
+        .item-row:hover { border-color: var(--accent); }
+        .item-row-name { font-size: 14px; font-weight: 700; margin-bottom: 4px; }
+        .item-row-qty { font-size: 12px; color: var(--text-tert); font-weight: 600;}
+        .item-row-price { font-size: 14px; font-weight: 800; color: var(--accent); text-shadow: var(--glow); }
 
-        .total-bar { position: sticky; bottom: 0; background: var(--card-bg); border-top: 1px solid var(--border-color); padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; margin: 0px -16px -30px -16px; }
+        .total-bar { position: sticky; bottom: 0; background: var(--card-bg); border-top: 1px solid var(--border-color); padding: 16px 20px; display: flex; justify-content: space-between; align-items: center; margin: 0px -20px -30px -20px; backdrop-filter: blur(10px); box-shadow: 0 -5px 20px rgba(0,0,0,0.05); }
 
-        .sub-tabs { display: flex; gap: 6px; margin-bottom: 14px; }
-        .sub-tab { flex: 1; padding: 8px; border: 1px solid var(--border-color); border-radius: var(--radius-sm); background: transparent; font-size: 12px; font-weight: 700; cursor: pointer; color: var(--text-sec); }
-        .sub-tab.active { background: var(--text); color: var(--bg); border-color: var(--text); }
+        .sub-tabs { display: flex; gap: 8px; margin-bottom: 16px; background: var(--bg); padding: 4px; border-radius: 20px; border: 1px solid var(--border-color); }
+        .sub-tab { flex: 1; padding: 10px; border: none; border-radius: 16px; background: transparent; font-size: 13px; font-weight: 800; cursor: pointer; color: var(--text-tert); transition: all 0.3s ease; }
+        .sub-tab.active { background: var(--accent); color: #ffffff; box-shadow: var(--shadow-sm); text-shadow: none; }
+        [data-theme="dark"] .sub-tab.active { box-shadow: 0 0 15px var(--accent-glow); }
 
-        .chart-area { height: 160px; border: 1px solid var(--border-color); border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; color: var(--text-quat); font-size: 12px; margin-bottom: 12px; background: var(--hover-bg); }
-        .action-row { display: flex; gap: 8px; margin-bottom: 16px; }
+        .chart-area { height: 180px; border: 1px solid var(--border-color); border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; color: var(--text-quat); font-size: 12px; margin-bottom: 16px; background: var(--bg); box-shadow: inset 0 2px 10px rgba(0,0,0,0.02); }
+        [data-theme="dark"] .chart-area { background: var(--card-bg); box-shadow: inset 0 2px 15px rgba(0,0,0,0.2); }
+        
+        .action-row { display: flex; gap: 12px; margin-bottom: 20px; }
         .action-row .btn { flex: 1; justify-content: center; }
 
-        .page { display: none; }
+        .page { display: none; animation: fadeIn 0.4s ease; }
         .page.active { display: block; }
-        ::-webkit-scrollbar { width: 4px; }
-        ::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-thumb { background: var(--text-tert); border-radius: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
 
-        .toast { position: fixed; top: 70px; left: 50%; transform: translateX(-50%) translateY(-20px); background: var(--text); color: var(--bg); padding: 10px 20px; border-radius: 10px; font-size: 13px; font-weight: 600; z-index: 300; opacity: 0; transition: all 0.3s; pointer-events: none; white-space: nowrap; }
+        .toast { position: fixed; top: 80px; left: 50%; transform: translateX(-50%) translateY(-20px); background: var(--accent); color: #fff; padding: 12px 24px; border-radius: 30px; font-size: 14px; font-weight: 700; z-index: 300; opacity: 0; transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55); pointer-events: none; white-space: nowrap; box-shadow: 0 10px 25px var(--accent-glow); }
         .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-        .search-result-item { padding: 8px 12px; border-bottom: 1px solid var(--border-color); cursor: pointer; font-size: 12px; background: var(--card-bg); transition: all 0.15s; }
-        .search-result-item:hover { background: var(--hover-bg); }
+        .search-result-item { padding: 12px 16px; border-bottom: 1px solid var(--border-color); cursor: pointer; font-size: 13px; font-weight: 600; background: var(--card-bg); transition: all 0.2s; }
+        .search-result-item:hover { background: var(--hover-bg); color: var(--accent); }
         .search-result-item:last-child { border-bottom: none; }
-        .fee-search-item:hover { background: var(--hover-bg); }
+        .fee-search-item:hover { background: var(--hover-bg); color: var(--accent); }
         .fee-search-item:last-child { border-bottom: none !important; }
 
         @media (max-width: 480px) {
@@ -389,17 +533,13 @@
         }
 
         /* ------------------------------------------- */
-        /* CSS KHUSUS UNTUK PRINT WEB (MENYEMBUNYIKAN UI) */
-        /* ------------------------------------------- */
-  /* ------------------------------------------- */
         /* CSS KHUSUS UNTUK PRINT WEB & PERBAIKAN UI   */
         /* ------------------------------------------- */
         
-        /* Memperbaiki item tertutup tombol "Simpan" */
         .item-list { margin: 12px 0; padding-bottom: 20px; }
 
         @media print {
-            @page { margin: 0; } /* Menghilangkan margin bawaan browser */
+            @page { margin: 0; } 
             body { background: white; margin: 0; padding: 0; }
             body * { visibility: hidden; }
             
@@ -410,13 +550,12 @@
                 top: 0 !important;
                 width: 100% !important;
                 height: auto !important;
-                display: block !important; /* Memaksa elemen mulai dari atas, bukan bawah */
+                display: block !important; 
                 background: white !important;
                 padding: 0 !important;
                 margin: 0 !important;
             }
             
-            /* Menghilangkan batasan modal agar bisa diprint full */
             #modal-struk .modal {
                 position: static !important;
                 max-height: none !important;
@@ -425,7 +564,6 @@
                 border-radius: 0 !important;
             }
             
-            /* Sembunyikan tombol-tombol saat diprint */
             .modal-header, #struk-main-actions, #struk-dl-options, .close-btn, .action-row { 
                 display: none !important; 
             }
@@ -440,319 +578,297 @@
             }
         }
 
-        /* --- CSS PROMO SUPPLIER --- */
-        /* --- CSS PROMO SUPPLIER (UPDATE MIRIP E-COMMERCE) --- */
+        /* --- CSS PROMO SUPPLIER (UPDATE MIRIP E-COMMERCE MODERN) --- */
         .promo-scroll { 
-            display: flex; overflow-x: auto; gap: 8px; padding-bottom: 8px; 
-            scroll-behavior: auto; /* Diatur JS */
-            -ms-overflow-style: none; scrollbar-width: none; /* Sembunyikan scrollbar di Firefox/IE */
+            display: flex; overflow-x: auto; gap: 12px; padding-bottom: 12px; 
+            scroll-behavior: smooth; 
+            -ms-overflow-style: none; scrollbar-width: none; 
         }
-        .promo-scroll::-webkit-scrollbar { display: none; } /* Sembunyikan scrollbar di Chrome/Safari */
+        .promo-scroll::-webkit-scrollbar { display: none; } 
         
         .promo-card { 
-            flex: 0 0 120px; /* Ukuran lebih kecil dan pas */
-            background: #ffffff; 
+            flex: 0 0 130px; 
+            background: var(--card-bg); 
             border: 1px solid var(--border-color); 
-            border-radius: 4px; 
-            padding: 6px; 
+            border-radius: var(--radius-sm); 
+            padding: 10px; 
             display: flex; flex-direction: column; position: relative; 
+            box-shadow: var(--shadow-sm);
+            transition: 0.3s;
         }
+        .promo-card:hover { transform: translateY(-4px); box-shadow: var(--glow); border-color: var(--accent); }
         .promo-badge { 
-            position: absolute; top: 0; left: 0; 
-            background: #ffeaef; color: var(--accent); 
-            font-size: 9px; padding: 3px 6px; 
-            border-radius: 4px 0 8px 0; font-weight: 800; z-index: 2; 
+            position: absolute; top: -6px; left: -6px; 
+            background: var(--accent); color: #fff; 
+            font-size: 10px; padding: 4px 8px; 
+            border-radius: 8px; font-weight: 800; z-index: 2; 
+            box-shadow: 0 4px 10px var(--accent-glow);
         }
         .promo-img-wrapper {
-            width: 100%; padding-top: 100%; /* Membuat kotak rasio 1:1 */
-            position: relative; margin-bottom: 6px;
-            border-radius: 6px; overflow: hidden; background: var(--hover-bg) !important; border: 1px solid #fcc1db;
+            width: 100%; padding-top: 100%; 
+            position: relative; margin-bottom: 10px;
+            border-radius: 10px; overflow: hidden; background: var(--bg); border: 1px solid var(--border-color);
         }
         .promo-img { 
             position: absolute; top: 0; left: 0; 
             width: 100%; height: 100%; 
-            object-fit: contain; /* Gambar tidak terpotong */
-            background: #ffffff; 
+            object-fit: cover; 
         }
         .promo-name { 
-            font-size: 11px; font-weight: 600; color: var(--text);
-            line-height: 1.3; height: 2.6em; /* Maksimal 2 baris teks */
+            font-size: 12px; font-weight: 700; color: var(--text);
+            line-height: 1.4; height: 2.8em; 
             overflow: hidden; text-overflow: ellipsis; 
             display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; 
-            margin-bottom: 4px; 
-            color: #562b3d;
+            margin-bottom: 6px; 
         }
-        .promo-price-old { font-size: 10px; text-decoration: line-through; color: var(--text-tert); margin-bottom: 2px; }
-        .promo-price-new { font-size: 14px; font-weight: 800; color: var(--danger); margin-bottom: 6px; }
+        .promo-price-old { font-size: 11px; text-decoration: line-through; color: var(--text-tert); margin-bottom: 2px; font-weight: 600; }
+        .promo-price-new { font-size: 16px; font-weight: 800; color: var(--accent); margin-bottom: 8px; text-shadow: var(--glow); }
         .promo-progress { 
-            background: #ffeaef; border-radius: 10px; height: 20px; 
+            background: var(--hover-bg); border-radius: 12px; height: 22px; 
             position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; 
+            border: 1px solid var(--border-color);
         }
-        .promo-progress-text { font-size: 9px; color: var(--accent); font-weight: 800; z-index: 1; color: #b20047; }
-        .promo-progress-bar { position: absolute; left: 0; top: 0; height: 100%; background: rgba(233, 30, 99, 0.2); width: 100%; }
+        .promo-progress-text { font-size: 10px; color: var(--text-sec); font-weight: 800; z-index: 1; }
+        [data-theme="dark"] .promo-progress-text { color: #fff; }
+        .promo-progress-bar { position: absolute; left: 0; top: 0; height: 100%; background: var(--accent-glow); width: 100%; }
 
         /* --- KALKULATOR STYLE --- */
-        .calc-display { width: 100%; padding: 15px; font-size: 24px; text-align: right; border-radius: var(--radius-sm); border: 1px solid var(--border-color); background: var(--hover-bg); color: var(--text); margin-bottom: 12px; font-weight: 800; outline: none; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); letter-spacing: 1px; }
-        .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
-        .calc-btn { padding: 14px 0; font-size: 16px; font-weight: 700; border-radius: var(--radius-sm); border: 1px solid var(--border-color); background: var(--card-bg); color: var(--text); cursor: pointer; transition: 0.1s; display: flex; align-items: center; justify-content: center; user-select: none; }
-        .calc-btn:active { transform: scale(0.92); }
-        .calc-btn.op { background: var(--hover-bg); color: var(--accent); font-weight: 800; }
-        .calc-btn.eq { background: var(--accent); color: white; }
-        .calc-btn.del { background: var(--danger); color: white; }
+        .calc-display { width: 100%; padding: 20px; font-size: 28px; text-align: right; border-radius: var(--radius-sm); border: none; background: var(--card-bg); color: var(--text); margin-bottom: 16px; font-weight: 800; box-shadow: inset 0 4px 10px rgba(0,0,0,0.05); letter-spacing: 1px; }
+        [data-theme="dark"] .calc-display { box-shadow: inset 0 4px 15px rgba(0,0,0,0.3); background: var(--bg); }
+        .calc-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+        .calc-btn { padding: 18px 0; font-size: 18px; font-weight: 800; border-radius: 16px; border: 1px solid var(--border-color); background: var(--card-bg); color: var(--text); cursor: pointer; transition: 0.2s; display: flex; align-items: center; justify-content: center; user-select: none; box-shadow: var(--shadow-sm); }
+        .calc-btn:active { transform: scale(0.9); }
+        .calc-btn:hover { background: var(--hover-bg); border-color: var(--accent); color: var(--accent); box-shadow: var(--glow); }
+        .calc-btn.op { background: var(--hover-bg); color: var(--accent); }
+        .calc-btn.eq { background: var(--accent); color: white; box-shadow: 0 4px 15px var(--accent-glow); border: none; }
+        .calc-btn.del { background: var(--danger); color: white; box-shadow: 0 4px 15px rgba(255, 59, 48, 0.3); border: none;}
 
-        /* Grid dinamis untuk Modal Semua Promo */
         .promo-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-            gap: 12px;
-            padding-bottom: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 16px;
+            padding-bottom: 24px;
         }
-        
-        /* Memaksa kartu promo di dalam grid agar tidak mengikuti aturan scroll horizontal */
-        .promo-grid > div {
-            display: flex; /* Membantu menyamakan tinggi kartu */
-        }
-        
-        .promo-grid .promo-card {
-            flex: none !important; /* Mematikan sifat bawaan flex horizontal */
-            width: 100%;
-            height: 100%;
-        }
+        .promo-grid > div { display: flex; }
+        .promo-grid .promo-card { flex: none !important; width: 100%; height: 100%; }
 
         /* ==============================================================
         RESPONSIVE AMAN (HP, TABLET, PC) & FIX KONTEN TERPOTONG
         ============================================================== */
         
-        /* 1. Aturan Dasar (HP) & Fix Konten Meluber (Blowout) */
         .app { margin: 0 auto; transition: all 0.3s ease; width: 100%; overflow-x: hidden; }
         .main { width: 100%; max-width: 100%; }
         
-        #product-list { display: grid; grid-template-columns: 1fr; gap: 5px; width: 100%; }
+        #product-list { display: grid; grid-template-columns: 1fr; gap: 8px; width: 100%; }
 
-        /* Kunci utama agar kotak produk tidak rusak karena teks terlalu panjang */
         .product-item { min-width: 0; width: 100%; }
         .product-info { min-width: 0; flex: 1; }
-        /* Memaksa pembagian kolom seimbang dan melarang elemen memanjang */
         .product-prices { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
         .product-prices > div { min-width: 0; }
 
-        /* 2. Saat dibuka di Tablet (Misal: iPad) */
         @media (min-width: 600px) {
             .app { 
-                max-width: 768px; /* Batasi lebar agar tidak melar berlebihan */
+                max-width: 768px; 
                 border-left: 1px solid var(--border-color);
                 border-right: 1px solid var(--border-color);
-                box-shadow: 0 0 20px rgba(0,0,0,0.05); 
+                box-shadow: 0 0 40px rgba(0,0,0,0.05); 
             }
+            [data-theme="dark"] .app { box-shadow: 0 0 50px rgba(255, 42, 122, 0.1); }
             .header, .bottom-nav { max-width: 768px; width: 100%; left: 50%; transform: translateX(-50%); }
             
-            /* Daftar produk otomatis jadi 2 kolom bersebelahan */
-            #product-list { grid-template-columns: repeat(2, 1fr); gap: 5px; }
+            #product-list { grid-template-columns: repeat(2, 1fr); gap: 12px; }
             .product-item { height: 100%; margin-bottom: 0; }
             
-            /* Form input transaksi jadi bersebelahan agar ringkas */
-            .tx-form-row, .fee-input-group { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+            .tx-form-row, .fee-input-group { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
 
-            /* OVERLAY MODAL RESPONSIVE (Tengah Layar) */
             .modal-overlay { align-items: center; padding: 24px; }
             .modal {
                 max-width: 550px;
-                border-radius: var(--radius); /* Membulatkan semua sudut */
+                border-radius: var(--radius); 
                 max-height: 85vh;
-                animation: popInModal 0.25s ease-out;
+                animation: popInModal 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
             }
         }
 
-        /* 3. Saat dibuka di PC/Laptop (Layar sangat lebar) */
         @media (min-width: 1024px) {
             .app { max-width: 1100px; }
             .header, .bottom-nav { max-width: 1100px; }
+            #product-list { grid-template-columns: repeat(3, 1fr); gap: 12px; }
             
-            /* Daftar produk otomatis jadi 3 kolom */
-            #product-list { grid-template-columns: repeat(3, 1fr); gap: 5px; }
-            
-            /* Transaksi Terbaru & Top 3 Barang di Home jadi bersebelahan */
-            .dashboard-desktop-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+            .dashboard-desktop-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; }
             .dashboard-desktop-grid .card { margin-bottom: 0; height: 100%; }
-
-            /* Modal PC lebih lebar dan lega */
             .modal { max-width: 650px; }
         }
 
-        /* 4. Layar PC Lebar (TV / Monitor Besar) */
         @media (min-width: 1400px) {
             .app { max-width: 1300px; }
             .header, .bottom-nav { max-width: 1300px; }
-            #product-list { grid-template-columns: repeat(4, 1fr); gap: 5px; }
+            #product-list { grid-template-columns: repeat(4, 1fr); gap: 12px; }
         }
 
-        /* Animasi khusus saat modal pop-up muncul di tengah layar */
         @keyframes popInModal {
-            from { transform: scale(0.95) translateY(20px); opacity: 0; }
+            from { transform: scale(0.9) translateY(20px); opacity: 0; }
             to { transform: scale(1) translateY(0); opacity: 1; }
         }
 
         /* ==============================================================
-           MODERNISASI KARTU TRANSAKSI (UI INVOICE CARD)
-           ============================================================== */
+            MODERNISASI KARTU TRANSAKSI (UI INVOICE CARD)
+            ============================================================== */
         .tx-card {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
-            border-radius: 14px;
-            padding: 14px;
-            margin-bottom: 12px;
+            border-radius: var(--radius);
+            padding: 18px;
+            margin-bottom: 16px;
             display: flex;
             flex-direction: column;
-            gap: 12px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
-            transition: all 0.2s ease;
+            gap: 14px;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s ease;
         }
-        .tx-card:hover { border-color: var(--text-quat); transform: translateY(-1px); }
+        .tx-card:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: var(--glow); }
 
         .tx-card-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             border-bottom: 1px dashed var(--border-color);
-            padding-bottom: 12px;
+            padding-bottom: 14px;
         }
         
-        .tx-badges { display: flex; gap: 6px; align-items: center; }
+        .tx-badges { display: flex; gap: 8px; align-items: center; }
         .tx-badge {
-            padding: 4px 8px;
-            border-radius: 6px;
-            font-size: 10px;
+            padding: 6px 10px;
+            border-radius: 8px;
+            font-size: 11px;
             font-weight: 800;
             text-transform: uppercase;
             letter-spacing: 0.5px;
         }
         .tx-badge.income { background: rgba(52, 199, 89, 0.15); color: var(--positive); }
         .tx-badge.expense { background: rgba(255, 59, 48, 0.15); color: var(--danger); }
-        .tx-badge.platform { background: var(--hover-bg); color: var(--text-sec); border: 1px solid var(--border-color); }
+        .tx-badge.platform { background: var(--bg); color: var(--text-sec); border: 1px solid var(--border-color); }
 
         .tx-card-body {
-            background: var(--hover-bg);
-            border-radius: 10px;
-            padding: 10px 12px;
+            background: var(--bg);
+            border-radius: 14px;
+            padding: 14px 16px;
             display: flex;
             flex-direction: column;
-            gap: 8px;
+            gap: 10px;
+            border: 1px solid var(--border-color);
         }
         
-        .tx-detail-item { display: flex; justify-content: space-between; font-size: 12px; }
-        .tx-detail-name { font-weight: 600; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-right: 12px; }
+        .tx-detail-item { display: flex; justify-content: space-between; font-size: 13px; }
+        .tx-detail-name { font-weight: 700; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-right: 12px; }
         .tx-detail-qty { font-weight: 800; color: var(--text-sec); flex-shrink: 0; }
 
         .tx-card-footer {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding-top: 4px;
+            padding-top: 6px;
         }
         
         .tx-date-modern {
-            font-size: 11px;
+            font-size: 12px;
             color: var(--text-tert);
             font-weight: 700;
         }
         
-        .tx-actions-modern { display: flex; gap: 6px; }
+        .tx-actions-modern { display: flex; gap: 8px; }
         .btn-action-sm {
-            padding: 8px 14px;
-            border-radius: 8px;
-            font-size: 11px;
+            padding: 10px 16px;
+            border-radius: 10px;
+            font-size: 12px;
             font-weight: 800;
             cursor: pointer;
             border: 1px solid var(--border-color);
             background: var(--card-bg);
             color: var(--text);
-            transition: 0.15s;
+            transition: 0.2s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
-        .btn-action-sm:hover { background: var(--hover-bg); }
-        .btn-action-sm.primary { background: var(--text); color: var(--bg); border-color: var(--text); }
-        .btn-action-sm.primary:hover { opacity: 0.85; }
+        .btn-action-sm:hover { background: var(--hover-bg); border-color: var(--accent); color: var(--accent); }
+        .btn-action-sm.primary { background: var(--accent); color: #ffffff; border: none; box-shadow: 0 4px 12px var(--accent-glow); }
+        .btn-action-sm.primary:hover { transform: translateY(-2px); filter: brightness(1.1); }
         .btn-action-sm.danger { color: var(--danger); border-color: rgba(255, 59, 48, 0.3); background: rgba(255, 59, 48, 0.05); }
         .btn-action-sm.danger:hover { background: rgba(255, 59, 48, 0.15); }
 
 /* ==============================================================
-           MODERN LEADERBOARD (TOP 3 BARANG)
-           ============================================================== */
-        .leaderboard-list { display: flex; flex-direction: column; gap: 8px; margin-top: 10px; }
+            MODERN LEADERBOARD (TOP 3 BARANG)
+            ============================================================== */
+        .leaderboard-list { display: flex; flex-direction: column; gap: 10px; margin-top: 12px; }
         
         .top-item {
             display: flex;
             align-items: center;
-            gap: 12px;
-            padding: 10px 12px;
-            background: var(--hover-bg);
-            border-radius: 10px;
+            gap: 14px;
+            padding: 12px 16px;
+            background: var(--bg);
+            border-radius: 14px;
             border: 1px solid var(--border-color);
-            transition: all 0.2s ease;
+            transition: all 0.3s ease;
+        }
+        .top-item:hover {
+            transform: translateX(4px);
+            border-color: var(--accent);
+            box-shadow: var(--shadow-sm);
         }
 
         .rank-badge {
-            width: 30px; height: 30px;
-            border-radius: 50%;
+            width: 36px; height: 36px;
+            border-radius: 12px;
             display: flex; align-items: center; justify-content: center;
-            font-weight: 800; font-size: 13px;
+            font-weight: 800; font-size: 14px;
             flex-shrink: 0;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
         }
-        .rank-1 { background: #FFD700; color: #7a5d00; }
-        .rank-2 { background: #C0C0C0; color: #5a5a5a; }
-        .rank-3 { background: #CD7F32; color: #7a4a20; }
+        .rank-1 { background: linear-gradient(135deg, #FFD700, #FDB931); color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.2); }
+        .rank-2 { background: linear-gradient(135deg, #E0E0E0, #9E9E9E); color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.2); }
+        .rank-3 { background: linear-gradient(135deg, #FFB75E, #ED8F03); color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.2); }
 
         .top-info { flex: 1; min-width: 0; }
         .top-name { 
-            font-size: 13px; font-weight: 700; color: var(--text);
+            font-size: 14px; font-weight: 800; color: var(--text);
             white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+            margin-bottom: 2px;
         }
-        .top-count { font-size: 11px; color: var(--text-sec); font-weight: 600; }
-
+        .top-count { font-size: 12px; color: var(--accent); font-weight: 700; text-shadow: var(--glow); }
 
         /* ==============================================================
         CSS RESPONSIVE - FIX GAP KIRI KANAN
         ============================================================== */
-
-        /* 1. Aturan utama: Pastikan aplikasi mengisi 100% lebar layar */
         .app, .main-container {
             width: 100%;
-            max-width: 100%; /* Menghilangkan batasan lebar yang kaku */
+            max-width: 100%; 
             margin: 0 auto;
-            padding: 0 10px; /* Memberi sedikit ruang napas di pinggir agar tidak menempel sekali */
-            box-sizing: border-box; /* Penting agar padding tidak menambah lebar elemen */
+            padding: 0 10px; 
+            box-sizing: border-box; 
         }
 
-        /* 2. Mengatur elemen agar otomatis menyesuaikan jumlah kolom */
-        /* Gunakan grid agar kartu produk atau data mengikuti lebar layar secara otomatis */
         .content-grid {
             display: grid;
-            /* auto-fit akan menambah jumlah kolom otomatis saat layar lebar */
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); 
             gap: 15px;
             width: 100%;
         }
 
-        /* 3. Khusus untuk tablet/layar lebar, buat konten tetap nyaman dibaca */
         @media (min-width: 768px) {
-            .app {
-                padding: 0 10px; /* Padding lebih besar di layar lebar */
-            }
+            .app { padding: 0 15px; }
         }
 
-        /* 4. Pastikan elemen header/navigasi juga mengikuti lebar 100% */
         .header, .bottom-nav, .card {
             width: 100% !important;
             max-width: 100% !important;
         }
 
-
         @media (min-width: 1200px) {
-        .stats-container {
-        display: grid;
-        grid-template-columns: repeat(4, 1fr); /* Tetap rapi 4 kolom di PC */
+            .stats-container {
+                display: grid;
+                grid-template-columns: repeat(4, 1fr);
             }
         }
-
     </style>
 </head>
 <body>
@@ -762,7 +878,7 @@
         <div class="header">
             <div class="header-left">
                 <button class="gear-btn" id="btn-settings" title="Pengaturan">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                         <circle cx="12" cy="12" r="3" />
                         <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
                     </svg>
@@ -770,7 +886,7 @@
                 <span class="brand">Maryn</span>
             </div>
             <button class="theme-btn" id="btn-theme" title="Mode Gelap/Terang">
-                <svg id="theme-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <svg id="theme-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                     <circle cx="12" cy="12" r="5" />
                     <path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42" />
                 </svg>
@@ -803,10 +919,10 @@
                     </div>
                 </div>
 
-                    <div class="card" id="promo-section" style="display: none; border-color: var(--accent); background: linear-gradient(to bottom right, var(--card-bg), var(--hover-bg));">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                        <div class="card-title" style="margin-bottom: 0; color: var(--accent);">⚡ Promo Supplier</div>
-                        <button class="btn btn-outline btn-sm" id="btn-all-promo" style="font-size: 10px; padding: 4px 8px; border-color: var(--accent); color: var(--accent);">Lihat Semua</button>
+                    <div class="card" id="promo-section" style="display: none; border: 1px solid var(--accent); background: linear-gradient(145deg, var(--card-bg), var(--hover-bg));">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                        <div class="card-title" style="margin-bottom: 0; color: var(--accent); text-shadow: var(--glow);">⚡ Promo Supplier</div>
+                        <button class="btn btn-outline btn-sm" id="btn-all-promo" style="font-size: 11px; padding: 6px 12px; border-color: var(--accent); color: var(--accent); border-radius: 20px;">Lihat Semua</button>
                         </div>
                         <div class="promo-scroll" id="dash-promo-list">
                         </div>
@@ -815,7 +931,7 @@
                 <div class="card">
                     <div class="card-title">Grafik Penjualan</div>
                     <div class="chart-area" id="chart-area">
-                        <svg width="100%" height="140" viewBox="0 0 400 140" id="sales-chart"></svg>
+                        <svg width="100%" height="180" viewBox="0 0 400 180" id="sales-chart"></svg>
                     </div>
                 </div>
 
@@ -833,14 +949,14 @@
 
             <div id="page-product" class="page">
                 <div class="action-row">
-                    <button class="btn btn-primary" id="btn-add-product">+ Tambah</button>
-                    <button class="btn btn-outline" id="btn-import-csv">&#128229; Import</button>
-                    <button class="btn btn-outline" id="btn-export-csv">&#128228; Export</button>
+                    <button class="btn btn-primary" id="btn-add-product" style="border-radius: 20px;">+ Tambah</button>
+                    <button class="btn btn-outline" id="btn-import-csv" style="border-radius: 20px;">&#128229; Import</button>
+                    <button class="btn btn-outline" id="btn-export-csv" style="border-radius: 20px;">&#128228; Export</button>
                 </div>
                 
-                <div style="display: flex; gap: 8px; margin-bottom: 10px;">
-                    <input type="text" class="search-box" placeholder="Cari produk..." id="product-search" style="margin-bottom: 0;" />
-                    <select class="select" id="product-sort" style="width: auto; margin-bottom: 0;">
+                <div style="display: flex; gap: 10px; margin-bottom: 12px;">
+                    <input type="text" class="search-box" placeholder="Cari produk..." id="product-search" style="margin-bottom: 0; border-radius: 20px;" />
+                    <select class="select" id="product-sort" style="width: auto; margin-bottom: 0; border-radius: 20px;">
                         <option value="newest">Terbaru</option>
                         <option value="oldest">Terlama</option>
                         <option value="az">A - Z</option>
@@ -849,23 +965,23 @@
                 </div>
 
                 <!-- Info Total Produk -->
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding: 0 4px; font-size: 12px; font-weight: 700; color: var(--text-sec);">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; padding: 0 8px; font-size: 13px; font-weight: 700; color: var(--text-sec);">
                     <div id="product-total-info">Total: 0 Produk</div>
                 </div>
 
                 <div id="product-list"></div>
 
                 <!-- Navigasi Halaman (Paginasi) -->
-                <div id="product-pagination" style="display: flex; justify-content: space-between; align-items: center; margin-top: 15px; display: none;">
-                    <button class="btn btn-outline btn-sm" id="btn-prev-page" style="padding: 8px 16px;">&laquo; Prev</button>
-                    <span id="page-indicator" style="font-size: 11px; font-weight: 800; color: var(--text-sec);">Hal 1 / 1</span>
-                    <button class="btn btn-outline btn-sm" id="btn-next-page" style="padding: 8px 16px;">Next &raquo;</button>
+                <div id="product-pagination" style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px; display: none;">
+                    <button class="btn btn-outline btn-sm" id="btn-prev-page" style="padding: 10px 20px; border-radius: 20px;">&laquo; Prev</button>
+                    <span id="page-indicator" style="font-size: 13px; font-weight: 800; color: var(--text-sec);">Hal 1 / 1</span>
+                    <button class="btn btn-outline btn-sm" id="btn-next-page" style="padding: 10px 20px; border-radius: 20px;">Next &raquo;</button>
                 </div>
             </div>
 
             <div id="page-buku" class="page">
                 <div class="action-row">
-                    <button class="btn btn-primary" id="btn-add-tx">+ Tambah Transaksi</button>
+                    <button class="btn btn-primary" id="btn-add-tx" style="width: 100%; border-radius: 20px;">+ Tambah Transaksi</button>
                 </div>
                 <div class="filter-tabs" id="buku-filters">
                     <button class="filter-tab active" data-filter="day">Hari</button>
@@ -877,9 +993,9 @@
                     <button class="sub-tab" data-tab="belanja">Belanja</button>
                 </div>
                 <div id="buku-list"></div>
-                <div class="action-row" style="margin-top: 16px">
-                    <button class="btn btn-outline" id="btn-export-penjualan">&#128228; Export Penjualan</button>
-                    <button class="btn btn-outline" id="btn-export-belanja">&#128228; Export Belanja</button>
+                <div class="action-row" style="margin-top: 20px">
+                    <button class="btn btn-outline" id="btn-export-penjualan" style="border-radius: 20px;">&#128228; Export Penjualan</button>
+                    <button class="btn btn-outline" id="btn-export-belanja" style="border-radius: 20px;">&#128228; Export Belanja</button>
                 </div>
             </div>
 
@@ -914,8 +1030,8 @@
                 </div>
 
                 <!-- Tambahkan bagian ini di dalam <div id="page-fee" class="page"> -->
-                <div class="card" style="margin-top: 16px;">
-                    <div class="card-title">🧮 Kalkulator Biasa</div>
+                <div class="card" style="margin-top: 24px; padding: 24px;">
+                    <div class="card-title" style="margin-bottom: 20px;">🧮 Kalkulator Biasa</div>
                     <input type="text" class="calc-display" id="calc-display" placeholder="0" readonly />
                     <div class="calc-grid">
                         <div class="calc-btn del" onclick="clearCalc()">C</div>
@@ -944,18 +1060,18 @@
                     </div>
                 </div>
 
-                <div class="card">
-                    <div class="card-title">📊 Kalkulator Simulasi</div>
+                <div class="card" style="padding: 24px;">
+                    <div class="card-title" style="margin-bottom: 20px;">📊 Kalkulator Simulasi</div>
                     
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
                         <div>
                             <span class="label">Harga Awal (Rp)</span>
-                            <input class="input" type="number" id="sim-modal" placeholder="Masukkan harga Modal..." oninput="hitungSimulasi()" style="margin-bottom: 0;">
+                            <input class="input" type="number" id="sim-modal" placeholder="Masukkan harga Modal..." oninput="hitungSimulasi()" style="margin-bottom: 0; border-radius: 12px;">
                         </div>
                         
                         <div>
                             <span class="label">Pilih Platform</span>
-                            <select class="select" id="sim-platform" onchange="resetSimAdmin()" style="margin-bottom: 0;">
+                            <select class="select" id="sim-platform" onchange="resetSimAdmin()" style="margin-bottom: 0; border-radius: 12px;">
                                 <option value="shopee">Shopee</option>
                                 <option value="lazada">Lazada</option>
                                 <option value="blibli">Blibli</option>
@@ -963,46 +1079,45 @@
                             </select>
                         </div>
                         
-                        <!-- Baris ini dibuat memanjang penuh (span 2) agar dropdownnya rapi -->
                         <div style="grid-column: span 2;">
                             <span class="label">Cari Kategori Admin Fee (%)</span>
                             <div style="position: relative;">
-                                <input class="input" type="text" id="sim-search-admin" placeholder="Ketik barang (misal: beras)..." autocomplete="off" style="margin-bottom:0;" oninput="cariAdminSim()">
+                                <input class="input" type="text" id="sim-search-admin" placeholder="Ketik barang (misal: beras)..." autocomplete="off" style="margin-bottom:0; border-radius: 12px;" oninput="cariAdminSim()">
                                 <input type="hidden" id="sim-selected-fee" value="8.25">
-                                <div id="sim-drop-admin" style="display:none; position:absolute; top:100%; left:0; width:100%; max-height:160px; overflow-y:auto; background:var(--card-bg); border:1px solid var(--border-color); border-radius:var(--radius-sm); z-index:100; box-shadow:var(--shadow-sm);"></div>
+                                <div id="sim-drop-admin" style="display:none; position:absolute; top:calc(100% + 4px); left:0; width:100%; max-height:200px; overflow-y:auto; background:var(--card-bg); border:1px solid var(--border-color); border-radius:12px; z-index:100; box-shadow:var(--shadow-lg);"></div>
                             </div>
                         </div>
 
                         <div>
                             <span class="label">Biaya Proses (Rp)</span>
-                            <input class="input" type="number" id="sim-proses" value="1250" oninput="hitungSimulasi()" style="margin-bottom: 0;">
+                            <input class="input" type="number" id="sim-proses" value="1250" oninput="hitungSimulasi()" style="margin-bottom: 0; border-radius: 12px;">
                         </div>
                         
                         <div>
                             <span class="label">Promo Xtra (%)</span>
-                            <input class="input" type="number" id="sim-promo" value="4.5" oninput="hitungSimulasi()" style="margin-bottom: 0;">
+                            <input class="input" type="number" id="sim-promo" value="4.5" oninput="hitungSimulasi()" style="margin-bottom: 0; border-radius: 12px;">
                         </div>
                         
                         <div>
                             <span class="label">Premi (%)</span>
-                            <input class="input" type="number" id="sim-premi" value="0.5" oninput="hitungSimulasi()" style="margin-bottom: 0;">
+                            <input class="input" type="number" id="sim-premi" value="0.5" oninput="hitungSimulasi()" style="margin-bottom: 0; border-radius: 12px;">
                         </div>
                         
                         <div>
                             <span class="label">Voucher (Rp)</span>
-                            <input class="input" type="number" id="sim-voucher" value="100" oninput="hitungSimulasi()" style="margin-bottom: 0;">
+                            <input class="input" type="number" id="sim-voucher" value="100" oninput="hitungSimulasi()" style="margin-bottom: 0; border-radius: 12px;">
                         </div>
 
                         <div style="grid-column: span 2;">
                             <span class="label">Markup (%)</span>
-                            <input class="input" type="number" id="sim-markup" value="10" oninput="hitungSimulasi()" style="margin-bottom: 0;">
+                            <input class="input" type="number" id="sim-markup" value="10" oninput="hitungSimulasi()" style="margin-bottom: 0; border-radius: 12px;">
                         </div>
                     </div>
                     
-                    <div style="background: var(--hover-bg); padding: 12px; border-radius: 10px; margin-top: 15px; border: 1px dashed var(--accent);">
-                        <div style="font-size: 13px; margin-bottom: 6px; color: var(--text-sec);">Harga Jual: <b id="out-jual" style="color: var(--text); font-size: 14px;">Rp 0</b></div>
-                        <div style="font-size: 13px; margin-bottom: 6px; color: var(--text-sec);">Hasil Akhir (Saldo): <b id="out-saldo" style="color: var(--positive); font-size: 14px;">Rp 0</b></div>
-                        <div style="font-size: 13px; color: var(--text-sec);">Profit Bersih: <b id="out-profit" style="color: var(--accent); font-size: 14px;">Rp 0</b></div>
+                    <div style="background: var(--bg); padding: 16px; border-radius: 16px; margin-top: 24px; border: 1px solid var(--border-color); box-shadow: inset 0 2px 10px rgba(0,0,0,0.02);">
+                        <div style="font-size: 14px; margin-bottom: 8px; color: var(--text-sec); font-weight: 600;">Harga Jual: <b id="out-jual" style="color: var(--text); font-size: 16px; text-shadow: var(--glow);">Rp 0</b></div>
+                        <div style="font-size: 14px; margin-bottom: 8px; color: var(--text-sec); font-weight: 600;">Hasil Akhir (Saldo): <b id="out-saldo" style="color: var(--positive); font-size: 16px; text-shadow: 0 0 10px rgba(48, 209, 88, 0.4);">Rp 0</b></div>
+                        <div style="font-size: 14px; color: var(--text-sec); font-weight: 600;">Profit Bersih: <b id="out-profit" style="color: var(--accent); font-size: 18px; text-shadow: var(--glow);">Rp 0</b></div>
                     </div>
                 </div>
 
@@ -1012,14 +1127,14 @@
 
         <div class="bottom-nav">
             <button class="nav-item active" data-page="home">
-                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
                     <polyline points="9 22 9 12 15 12 15 22" />
                 </svg>
                 <span>Home</span>
             </button>
             <button class="nav-item" data-page="product">
-                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
                     <line x1="3" y1="6" x2="21" y2="6" />
                     <path d="M16 10a4 4 0 0 1-8 0" />
@@ -1027,7 +1142,7 @@
                 <span>Product</span>
             </button>
             <button class="nav-item" data-page="buku">
-                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                     <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
                     <polyline points="14 2 14 8 20 8" />
                     <line x1="16" y1="13" x2="8" y2="13" />
@@ -1036,7 +1151,7 @@
                 <span>Buku</span>
             </button>
             <button class="nav-item" data-page="fee">
-                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                     <line x1="12" y1="1" x2="12" y2="23" />
                     <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" />
                 </svg>
@@ -1044,6 +1159,7 @@
             </button>
         </div>
 
+        <!-- MODALS (All borders rounded top 32px) -->
         <div class="modal-overlay" id="modal-settings">
             <div class="modal">
                 <div class="modal-header">
@@ -1052,7 +1168,7 @@
                 </div>
                 <div class="setting-section">
                     <div class="setting-section-title">
-                    <img src="shopee.png" class="fee-logo-img" style="width: 28px; height: 28px;" alt="Shopee">
+                    <img src="shopee.png" class="fee-logo-img" style="width: 32px; height: 32px; box-shadow:none; padding:4px;" alt="Shopee">
                         Shopee
                     </div>
                     <div class="fee-input-group">
@@ -1064,7 +1180,7 @@
                 </div>
                 <div class="setting-section">
                     <div class="setting-section-title">
-                    <img src="lazada.png" class="fee-logo-img" style="width: 28px; height: 28px;" alt="Lazada">
+                    <img src="lazada.png" class="fee-logo-img" style="width: 32px; height: 32px; box-shadow:none; padding:4px;" alt="Lazada">
                     Lazada
                     </div>
                     <div class="fee-input-group">
@@ -1076,7 +1192,7 @@
                 </div>
                 <div class="setting-section">
                     <div class="setting-section-title">
-                    <img src="bliblii.png" class="fee-logo-img" style="width: 28px; height: 28px;" alt="Blibli">
+                    <img src="bliblii.png" class="fee-logo-img" style="width: 32px; height: 32px; box-shadow:none; padding:4px;" alt="Blibli">
                         Blibli
                     </div>
                     <div class="fee-input-group">
@@ -1088,7 +1204,7 @@
                 </div>
                 <div class="setting-section">
                     <div class="setting-section-title">
-                    <img src="tiktok.png" class="fee-logo-img" style="width: 28px; height: 28px;" alt="Tiktok">
+                    <img src="tiktok.png" class="fee-logo-img" style="width: 32px; height: 32px; box-shadow:none; padding:4px;" alt="Tiktok">
                         TikTok
                     </div>
                     <div class="fee-input-group">
@@ -1098,9 +1214,9 @@
                         <div><span class="label">Voucher Toko (Rp)</span><input class="input" type="number" placeholder="0" value="0" id="set-tiktok-voucher" /></div>
                     </div>
                 </div>
-                <div class="action-row" style="margin-top: 8px">
-                    <button class="btn btn-outline" data-close="modal-settings">Batal</button>
-                    <button class="btn btn-primary" id="btn-save-settings">Simpan Pengaturan</button>
+                <div class="action-row" style="margin-top: 16px">
+                    <button class="btn btn-outline" data-close="modal-settings" style="border-radius: 20px;">Batal</button>
+                    <button class="btn btn-primary" id="btn-save-settings" style="border-radius: 20px;">Simpan Pengaturan</button>
                 </div>
             </div>
         </div>
@@ -1112,113 +1228,113 @@
                     <button class="close-btn" data-close="modal-product">&#10005;</button>
                 </div>
                 <span class="label">Foto Produk</span>
-                <div style="display: flex; gap: 8px; margin-bottom: 10px">
-                    <button class="btn btn-outline btn-sm" id="btn-prod-upload">&#128444; Upload</button>
+                <div style="display: flex; gap: 10px; margin-bottom: 16px">
+                    <button class="btn btn-outline btn-sm" id="btn-prod-upload" style="border-radius: 12px;">&#128444; Upload</button>
                     <input type="file" id="prod-file" style="display: none" accept="image/*" />
-                    <button class="btn btn-outline btn-sm" id="btn-prod-link">&#128279; Link</button>
+                    <button class="btn btn-outline btn-sm" id="btn-prod-link" style="border-radius: 12px;">&#128279; Link</button>
                 </div>
-                <div id="prod-preview" style="width: 80px; height: 80px; border-radius: 10px; background: var(--hover-bg); display: none; align-items: center; justify-content: center; margin-bottom: 10px; overflow: hidden; border: 1px solid var(--border-color);">
+                <div id="prod-preview" style="width: 90px; height: 90px; border-radius: 16px; background: var(--hover-bg); display: none; align-items: center; justify-content: center; margin-bottom: 16px; overflow: hidden; border: 1px solid var(--border-color);">
                     <img id="prod-preview-img" style="width: 100%; height: 100%; object-fit: cover" />
                 </div>
                 <span class="label">Barcode</span>
-                <div style="display: flex; gap: 8px; margin-bottom: 10px;">
-                    <input class="input" style="flex: 1; margin-bottom: 0;" type="text" placeholder="Scan atau ketik barcode" id="prod-barcode" />
-                    <button class="btn btn-outline btn-sm" id="btn-prod-camera" style="height: 40px; width: 60px;">&#128247;</button>
+                <div style="display: flex; gap: 10px; margin-bottom: 16px;">
+                    <input class="input" style="flex: 1; margin-bottom: 0; border-radius: 12px;" type="text" placeholder="Scan atau ketik barcode" id="prod-barcode" />
+                    <button class="btn btn-outline btn-sm" id="btn-prod-camera" style="height: 48px; width: 64px; border-radius: 12px; font-size: 16px;">&#128247;</button>
                 </div>
                 <span class="label">Nama Produk</span>
-                <input class="input" type="text" placeholder="Nama produk" id="prod-name" />
+                <input class="input" type="text" placeholder="Nama produk" id="prod-name" style="border-radius: 12px;" />
                 <span class="label">Harga Modal (Rp)</span>
-                <input class="input" type="number" placeholder="0" id="prod-modal" />
+                <input class="input" type="number" placeholder="0" id="prod-modal" style="border-radius: 12px;" />
                 <span class="label">Stok</span>
-                <input class="input" type="number" placeholder="0" id="prod-stock" />
+                <input class="input" type="number" placeholder="0" id="prod-stock" style="border-radius: 12px;" />
                 <span class="label">Supplier</span>
-                <input class="input" type="text" placeholder="Nama supplier" id="prod-supplier" />
+                <input class="input" type="text" placeholder="Nama supplier" id="prod-supplier" style="border-radius: 12px;" />
                 
-                <div style="background: var(--hover-bg); padding: 12px; border-radius: 10px; margin: 12px 0; border: 1px dashed var(--accent);">
-                    <div style="font-size: 12px; font-weight: 800; margin-bottom: 10px; color: var(--accent);">⚡ Set Promo Supplier (Opsional)</div>
+                <div style="background: var(--bg); padding: 16px; border-radius: 16px; margin: 20px 0; border: 1px dashed var(--accent);">
+                    <div style="font-size: 13px; font-weight: 800; margin-bottom: 12px; color: var(--accent); text-shadow: var(--glow);">⚡ Set Promo Supplier (Opsional)</div>
                     <span class="label">Harga Modal Diskon (Rp)</span>
-                    <input class="input" type="number" placeholder="Kosongkan jika tidak ada promo" id="prod-promo-modal" />
-                    <div style="display: flex; gap: 10px;">
+                    <input class="input" type="number" placeholder="Kosongkan jika tidak ada promo" id="prod-promo-modal" style="border-radius: 12px;" />
+                    <div style="display: flex; gap: 12px;">
                         <div style="flex:1;">
                             <span class="label">Mulai Promo</span>
-                            <input class="input" type="date" id="prod-promo-start" />
+                            <input class="input" type="date" id="prod-promo-start" style="border-radius: 12px;" />
                         </div>
                         <div style="flex:1;">
                             <span class="label">Akhir Promo</span>
-                            <input class="input" type="date" id="prod-promo-end" />
+                            <input class="input" type="date" id="prod-promo-end" style="border-radius: 12px;" />
                         </div>
                     </div>
                 </div>
                 
                 <span class="label">Admin Shopee</span>
-                <div style="position: relative; margin-bottom: 10px;">
-                    <input class="input" type="text" id="display-shopee" placeholder="Ketik kategori Shopee..." autocomplete="off" style="margin-bottom:0;" />
+                <div style="position: relative; margin-bottom: 16px;">
+                    <input class="input" type="text" id="display-shopee" placeholder="Ketik kategori Shopee..." autocomplete="off" style="margin-bottom:0; border-radius: 12px;" />
                     <input type="hidden" id="prod-shopee" />
-                    <div id="drop-shopee" style="display:none; position:absolute; top:100%; left:0; width:100%; max-height:160px; overflow-y:auto; background:var(--card-bg); border:1px solid var(--border-color); border-radius:var(--radius-sm); z-index:100; box-shadow:var(--shadow-lg);"></div>
+                    <div id="drop-shopee" style="display:none; position:absolute; top:calc(100% + 4px); left:0; width:100%; max-height:200px; overflow-y:auto; background:var(--card-bg); border:1px solid var(--border-color); border-radius:12px; z-index:100; box-shadow:var(--shadow-lg);"></div>
                 </div>
 
                 <span class="label">Admin Lazada</span>
-                <div style="position: relative; margin-bottom: 10px;">
-                    <input class="input" type="text" id="display-lazada" placeholder="Ketik kategori Lazada..." autocomplete="off" style="margin-bottom:0;" />
+                <div style="position: relative; margin-bottom: 16px;">
+                    <input class="input" type="text" id="display-lazada" placeholder="Ketik kategori Lazada..." autocomplete="off" style="margin-bottom:0; border-radius: 12px;" />
                     <input type="hidden" id="prod-lazada" />
-                    <div id="drop-lazada" style="display:none; position:absolute; top:100%; left:0; width:100%; max-height:160px; overflow-y:auto; background:var(--card-bg); border:1px solid var(--border-color); border-radius:var(--radius-sm); z-index:100; box-shadow:var(--shadow-lg);"></div>
+                    <div id="drop-lazada" style="display:none; position:absolute; top:calc(100% + 4px); left:0; width:100%; max-height:200px; overflow-y:auto; background:var(--card-bg); border:1px solid var(--border-color); border-radius:12px; z-index:100; box-shadow:var(--shadow-lg);"></div>
                 </div>
 
                 <span class="label">Admin Blibli</span>
-                <div style="position: relative; margin-bottom: 10px;">
-                    <input class="input" type="text" id="display-blibli" placeholder="Ketik kategori Blibli..." autocomplete="off" style="margin-bottom:0;" />
+                <div style="position: relative; margin-bottom: 16px;">
+                    <input class="input" type="text" id="display-blibli" placeholder="Ketik kategori Blibli..." autocomplete="off" style="margin-bottom:0; border-radius: 12px;" />
                     <input type="hidden" id="prod-blibli" />
-                    <div id="drop-blibli" style="display:none; position:absolute; top:100%; left:0; width:100%; max-height:160px; overflow-y:auto; background:var(--card-bg); border:1px solid var(--border-color); border-radius:var(--radius-sm); z-index:100; box-shadow:var(--shadow-lg);"></div>
+                    <div id="drop-blibli" style="display:none; position:absolute; top:calc(100% + 4px); left:0; width:100%; max-height:200px; overflow-y:auto; background:var(--card-bg); border:1px solid var(--border-color); border-radius:12px; z-index:100; box-shadow:var(--shadow-lg);"></div>
                 </div>
 
                 <span class="label">Admin TikTok</span>
-                <div style="position: relative; margin-bottom: 10px;">
-                    <input class="input" type="text" id="display-tiktok" placeholder="Ketik kategori TikTok..." autocomplete="off" style="margin-bottom:0;" />
+                <div style="position: relative; margin-bottom: 16px;">
+                    <input class="input" type="text" id="display-tiktok" placeholder="Ketik kategori TikTok..." autocomplete="off" style="margin-bottom:0; border-radius: 12px;" />
                     <input type="hidden" id="prod-tiktok" />
-                    <div id="drop-tiktok" style="display:none; position:absolute; top:100%; left:0; width:100%; max-height:160px; overflow-y:auto; background:var(--card-bg); border:1px solid var(--border-color); border-radius:var(--radius-sm); z-index:100; box-shadow:var(--shadow-lg);"></div>
+                    <div id="drop-tiktok" style="display:none; position:absolute; top:calc(100% + 4px); left:0; width:100%; max-height:200px; overflow-y:auto; background:var(--card-bg); border:1px solid var(--border-color); border-radius:12px; z-index:100; box-shadow:var(--shadow-lg);"></div>
                 </div>
 
                 <span class="label">Markup (%)</span>
-                <input class="input" type="number" placeholder="Markup keuntungan" value="30" id="prod-markup" />
+                <input class="input" type="number" placeholder="Markup keuntungan" value="30" id="prod-markup" style="border-radius: 12px;" />
 
-                <div style="background: var(--hover-bg); padding: 12px; border-radius: 10px; margin: 10px 0; display:flex; flex-direction:column; gap:10px;">
+                <div style="background: var(--bg); padding: 16px; border-radius: 16px; margin: 16px 0 24px 0; display:flex; flex-direction:column; gap:12px; border: 1px solid var(--border-color);">
                     <div>
-                        <div style="font-size: 11px; color: var(--text-tert); font-weight:700;">SHOPEE</div>
-                        <div style="font-size: 14px; font-weight: 800; color:var(--chart2);" id="preview-shopee-harga">Rp 0</div>
-                        <div style="font-size: 11px; color: var(--text-sec); margin-top:2px;">
+                        <div style="font-size: 11px; color: var(--text-tert); font-weight:800; margin-bottom:4px;">SHOPEE</div>
+                        <div style="font-size: 16px; font-weight: 800; color:var(--chart2); text-shadow:var(--glow);" id="preview-shopee-harga">Rp 0</div>
+                        <div style="font-size: 12px; color: var(--text-sec); margin-top:4px; font-weight:600;">
                             Hasil Akhir: <b id="preview-shopee-hasil">Rp 0</b> &middot; Profit: <b style="color: var(--positive)" id="preview-shopee-profit">Rp 0</b>
                         </div>
                     </div>
                     <div style="height:1px; background:var(--border-color);"></div>
                     <div>
-                        <div style="font-size: 11px; color: var(--text-tert); font-weight:700;">LAZADA</div>
-                        <div style="font-size: 14px; font-weight: 800; color:var(--chart1);" id="preview-lazada-harga">Rp 0</div>
-                        <div style="font-size: 11px; color: var(--text-sec); margin-top:2px;">
+                        <div style="font-size: 11px; color: var(--text-tert); font-weight:800; margin-bottom:4px;">LAZADA</div>
+                        <div style="font-size: 16px; font-weight: 800; color:var(--chart1); text-shadow:var(--glow);" id="preview-lazada-harga">Rp 0</div>
+                        <div style="font-size: 12px; color: var(--text-sec); margin-top:4px; font-weight:600;">
                             Hasil Akhir: <b id="preview-lazada-hasil">Rp 0</b> &middot; Profit: <b style="color: var(--positive)" id="preview-lazada-profit">Rp 0</b>
                         </div>
                     </div>
                     <div style="height:1px; background:var(--border-color);"></div>
                     <div>
-                        <div style="font-size: 11px; color: var(--text-tert); font-weight:700;">BLIBLI</div>
-                        <div style="font-size: 14px; font-weight: 800; color:var(--chart3);" id="preview-blibli-harga">Rp 0</div>
-                        <div style="font-size: 11px; color: var(--text-sec); margin-top:2px;">
+                        <div style="font-size: 11px; color: var(--text-tert); font-weight:800; margin-bottom:4px;">BLIBLI</div>
+                        <div style="font-size: 16px; font-weight: 800; color:var(--chart3); text-shadow:var(--glow);" id="preview-blibli-harga">Rp 0</div>
+                        <div style="font-size: 12px; color: var(--text-sec); margin-top:4px; font-weight:600;">
                             Hasil Akhir: <b id="preview-blibli-hasil">Rp 0</b> &middot; Profit: <b style="color: var(--positive)" id="preview-blibli-profit">Rp 0</b>
                         </div>
                     </div>
                     <div style="height:1px; background:var(--border-color);"></div>
                     <div>
-                        <div style="font-size: 11px; color: var(--text-tert); font-weight:700;">TIKTOK</div>
-                        <div style="font-size: 14px; font-weight: 800; color:var(--text);" id="preview-tiktok-harga">Rp 0</div>
-                        <div style="font-size: 11px; color: var(--text-sec); margin-top:2px;">
+                        <div style="font-size: 11px; color: var(--text-tert); font-weight:800; margin-bottom:4px;">TIKTOK</div>
+                        <div style="font-size: 16px; font-weight: 800; color:var(--text); text-shadow:var(--glow);" id="preview-tiktok-harga">Rp 0</div>
+                        <div style="font-size: 12px; color: var(--text-sec); margin-top:4px; font-weight:600;">
                             Hasil Akhir: <b id="preview-tiktok-hasil">Rp 0</b> &middot; Profit: <b style="color: var(--positive)" id="preview-tiktok-profit">Rp 0</b>
                         </div>
                     </div>
                 </div>
 
                 <div class="action-row">
-                    <button class="btn btn-danger" id="btn-delete-product" style="display:none;">Hapus</button>
-                    <button class="btn btn-outline" data-close="modal-product">Batal</button>
-                    <button class="btn btn-primary" id="btn-save-product">Simpan</button>
+                    <button class="btn btn-danger" id="btn-delete-product" style="display:none; border-radius: 20px;">Hapus</button>
+                    <button class="btn btn-outline" data-close="modal-product" style="border-radius: 20px;">Batal</button>
+                    <button class="btn btn-primary" id="btn-save-product" style="border-radius: 20px;">Simpan</button>
                 </div>
             </div>
         </div>
@@ -1232,20 +1348,20 @@
                 <div class="tx-form-row">
                     <div>
                         <span class="label">Tanggal</span>
-                        <input class="input" type="date" id="tx-date" />
+                        <input class="input" type="date" id="tx-date" style="border-radius: 12px;" />
                     </div>
                     <div>
                         <span class="label">Jenis</span>
-                        <select class="select" id="tx-type">
+                        <select class="select" id="tx-type" style="border-radius: 12px;">
                             <option value="penjualan">Penjualan</option>
                             <option value="belanja">Belanja</option>
                         </select>
                     </div>
                 </div>
                 
-                <div id="tx-platform-container" style="margin-bottom: 10px;">
+                <div id="tx-platform-container" style="margin-bottom: 16px;">
                     <span class="label">Platform Penjualan</span>
-                    <select class="select" id="tx-platform">
+                    <select class="select" id="tx-platform" style="border-radius: 12px;">
                         <option value="Offline">Offline / Toko</option>
                         <option value="Shopee">Shopee</option>
                         <option value="Lazada">Lazada</option>
@@ -1255,32 +1371,32 @@
                 </div>
 
                 <span class="label" id="tx-search-label">Cari Barang (Scan/Barcode/Nama)</span>
-                <div style="display: flex; gap: 8px; margin-bottom: 10px;">
-                    <input class="input" style="flex: 1; margin-bottom: 0;" type="text" placeholder="Ketik barcode atau nama..." id="tx-search" />
-                    <button class="btn btn-outline btn-sm" style="height: 40px; width: 60px;" id="btn-tx-camera">&#128247;</button>
+                <div style="display: flex; gap: 10px; margin-bottom: 16px;">
+                    <input class="input" style="flex: 1; margin-bottom: 0; border-radius: 12px;" type="text" placeholder="Ketik barcode atau nama..." id="tx-search" />
+                    <button class="btn btn-outline btn-sm" style="height: 48px; width: 64px; border-radius: 12px; font-size: 16px;" id="btn-tx-camera">&#128247;</button>
                 </div>
 
-                <div id="tx-search-results" style="max-height: 120px; overflow-y: auto; margin-bottom: 10px; display: none; border: 1px solid var(--border-color); border-radius: var(--radius-sm);"></div>
+                <div id="tx-search-results" style="max-height: 140px; overflow-y: auto; margin-bottom: 16px; display: none; border: 1px solid var(--border-color); border-radius: 12px;"></div>
                 
                 <span class="label">Qty</span>
-                <input class="input" type="number" value="1" min="1" id="tx-qty" />
+                <input class="input" type="number" value="1" min="1" id="tx-qty" style="border-radius: 12px;" />
                 <span class="label">Pendapatan / Harga (Rp)</span>
-                <input class="input" type="number" placeholder="0" id="tx-price" />
+                <input class="input" type="number" placeholder="0" id="tx-price" style="border-radius: 12px;" />
                 
-                <button class="btn btn-outline" style="width: 100%; margin-bottom: 12px" id="btn-add-tx-item">+ Tambahkan ke Daftar</button>
+                <button class="btn btn-outline" style="width: 100%; margin-bottom: 20px; border-radius: 16px; border-style: dashed; border-width: 2px;" id="btn-add-tx-item">+ Tambahkan ke Daftar</button>
                 
                 <div class="card-title">Daftar Item</div>
                 <div class="item-list" id="tx-item-list"></div>
                 
-                <div class="total-bar">
+                <div class="total-bar" style="border-radius: 0 0 32px 32px;">
                     <div>
-                        <div style="font-size: 11px; color: var(--text-tert)">Total</div>
-                        <div style="font-size: 18px; font-weight: 800" id="tx-total">Rp 0</div>
+                        <div style="font-size: 12px; color: var(--text-tert); font-weight: 700;">Total</div>
+                        <div style="font-size: 20px; font-weight: 800; color: var(--accent); text-shadow: var(--glow);" id="tx-total">Rp 0</div>
                     </div>
                     <div style="display: flex; gap: 8px">
-                        <button class="btn btn-outline btn-sm" data-close="modal-tx">Batal</button>
-                        <button class="btn btn-primary btn-sm" id="btn-save-tx">Simpan</button>
-                        <button class="btn btn-outline btn-sm" id="btn-save-print">&#128424; Buka Struk</button>
+                        <button class="btn btn-outline btn-sm" data-close="modal-tx" style="border-radius: 12px;">Batal</button>
+                        <button class="btn btn-primary btn-sm" id="btn-save-tx" style="border-radius: 12px;">Simpan</button>
+                        <button class="btn btn-outline btn-sm" id="btn-save-print" style="border-radius: 12px;">&#128424; Buka Struk</button>
                     </div>
                 </div>
             </div>
@@ -1292,8 +1408,8 @@
                     <div class="modal-title" id="fee-detail-title">Kategori Fee</div>
                     <button class="close-btn" data-close="modal-fee-detail">&#10005;</button>
                 </div>
-                <input type="text" class="search-box" placeholder="Cari kategori fee..." id="fee-search" />
-                <div id="fee-list"></div>
+                <input type="text" class="search-box" placeholder="Cari kategori fee..." id="fee-search" style="border-radius: 20px;" />
+                <div id="fee-list" style="margin-top: 10px;"></div>
             </div>
         </div>
 
@@ -1303,9 +1419,9 @@
                     <div class="modal-title">&#128247; Scan Barcode</div>
                     <button class="close-btn" data-close="modal-scanner">&#10005;</button>
                 </div>
-                <div id="reader" style="width: 100%; border-radius: 10px; overflow: hidden;"></div>
-                <div class="action-row" style="margin-top: 16px;">
-                    <button class="btn btn-outline" data-close="modal-scanner" style="width: 100%;">Batal Scan</button>
+                <div id="reader" style="width: 100%; border-radius: 16px; overflow: hidden; box-shadow: var(--shadow-sm);"></div>
+                <div class="action-row" style="margin-top: 24px;">
+                    <button class="btn btn-outline" data-close="modal-scanner" style="width: 100%; border-radius: 20px;">Batal Scan</button>
                 </div>
             </div>
         </div>
@@ -1317,18 +1433,18 @@
                     <button class="close-btn" data-close="modal-struk">&#10005;</button>
                 </div>
                 
-                <div id="struk-capture-area" style="background: #ffffff; color: #000000; padding: 16px; border-radius: 10px; margin-bottom: 16px; display: flex; justify-content: center;">
-                    <div id="struk-content" style="font-family: monospace; font-size: 12px; line-height: 1.6; white-space: pre-wrap; display: inline-block; text-align: left;"></div>
+                <div id="struk-capture-area" style="background: #ffffff; color: #000000; padding: 20px; border-radius: 16px; margin-bottom: 20px; display: flex; justify-content: center; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                    <div id="struk-content" style="font-family: monospace; font-size: 13px; line-height: 1.6; white-space: pre-wrap; display: inline-block; text-align: left;"></div>
                 </div>
 
-                <div class="action-row" id="struk-main-actions">
-                    <button class="btn" id="btn-action-print" style="flex: 1; font-size: 12px; padding: 10px 5px; background: #007aff; color: white; border:none; border-radius:8px; font-weight:bold;">🖨️ Cetak</button>
-                    <button class="btn" id="btn-action-save" style="flex: 1; font-size: 12px; padding: 10px 5px; background: #ff9500; color: white; border:none; border-radius:8px; font-weight:bold;">💾 Simpan JPG</button>
-                    <button class="btn" id="btn-action-wa" style="flex: 1; font-size: 12px; padding: 10px 5px; background: #25D366; color: white; border:none; border-radius:8px; font-weight:bold;">💬 Share / WA</button>
+                <div class="action-row" id="struk-main-actions" style="gap: 10px;">
+                    <button class="btn" id="btn-action-print" style="flex: 1; font-size: 13px; padding: 12px 6px; background: #007aff; color: white; border:none; border-radius:12px; font-weight:800; box-shadow: 0 4px 10px rgba(0,122,255,0.3);">🖨️ Cetak</button>
+                    <button class="btn" id="btn-action-save" style="flex: 1; font-size: 13px; padding: 12px 6px; background: #ff9500; color: white; border:none; border-radius:12px; font-weight:800; box-shadow: 0 4px 10px rgba(255,149,0,0.3);">💾 Simpan</button>
+                    <button class="btn" id="btn-action-wa" style="flex: 1; font-size: 13px; padding: 12px 6px; background: #25D366; color: white; border:none; border-radius:12px; font-weight:800; box-shadow: 0 4px 10px rgba(37,211,102,0.3);">💬 Share</button>
                 </div>
 
-                <div class="action-row" style="margin-top: 12px;">
-                    <button class="btn btn-outline" data-close="modal-struk" style="width: 100%;">Tutup</button>
+                <div class="action-row" style="margin-top: 16px;">
+                    <button class="btn btn-outline" data-close="modal-struk" style="width: 100%; border-radius: 20px;">Tutup</button>
                 </div>
             </div>
         </div>
@@ -1340,13 +1456,11 @@
                     <div class="modal-title">⚡ Semua Promo Aktif</div>
                     <button class="close-btn" data-close="modal-promo-all">&#10005;</button>
                 </div>
-                <!-- Ganti baris di bawah ini -->
                 <div id="all-promo-list" class="promo-grid"></div>
             </div>
     </div>
 
     <script>
-
         // Pendaftaran Service Worker untuk PWA
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
@@ -1358,10 +1472,6 @@
             });
         }
 
-        
-        
-        // Inisialisasi Firebase
-        // Your web app's Firebase configuration
         const firebaseConfig = {
         apiKey: "AIzaSyDQmfkeBvc0e01EK8ayWSRG9Bpp34c8_pw",
         authDomain: "maryn-id.firebaseapp.com",
@@ -1369,38 +1479,36 @@
         storageBucket: "maryn-id.firebasestorage.app",
         messagingSenderId: "200503979380",
         appId: "1:200503979380:web:541f9e7928cb186fe01021"
-        };           
+        };      
                 
-        
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
         // Variabel awal
-        let products = []; // Kosongkan, akan diisi oleh Firebase
+        let products = []; 
         let currentProductPage = 1;
         const productsPerPage = 100;
-        let transactions = []; // Kosongkan, akan diisi oleh Firebase
+        let transactions = []; 
 
-        // Fungsi mengecek apakah Modal Promo sedang aktif hari ini
         function getActiveModal(product) {
             if (!product.promoModal || !product.promoStartDate || !product.promoEndDate) return product.modal;
             
             const now = new Date();
-            now.setHours(0, 0, 0, 0); // Nol-kan jam agar akurat per hari
+            now.setHours(0, 0, 0, 0); 
             
             const start = new Date(product.promoStartDate); start.setHours(0, 0, 0, 0);
             const end = new Date(product.promoEndDate); end.setHours(23, 59, 59, 999);
             
-            if (now >= start && now <= end) return product.promoModal; // Promo Aktif!
-            return product.modal; // Promo tidak aktif, pakai modal normal
+            if (now >= start && now <= end) return product.promoModal; 
+            return product.modal; 
         }
 
-        // Fungsi mengubah format tanggal YYYY-MM-DD ke DD/MM/YYYY
         function formatTanggalPromo(dateStr) {
             if(!dateStr) return "";
             const d = new Date(dateStr);
             return String(d.getDate()).padStart(2, '0') + '/' + String(d.getMonth() + 1).padStart(2, '0') + '/' + d.getFullYear();
         }
+
 
 
        // 1. Data Mentah Shopee
@@ -8624,8 +8732,6 @@
 
 
 
-
-
         function parseRawFees(rawText, platformPrefix) {
             return rawText.trim().split('\n').filter(line => line.trim() !== '').map((line, index) => {
                 const parts = line.split('|');
@@ -8783,7 +8889,6 @@
             document.getElementById("btn-save-settings").addEventListener("click", saveSettings);
             document.getElementById("fee-search").addEventListener("input", renderFeeList);
 
-            // BINDING TOMBOL STRUK WEB
             const btnPrint = document.getElementById("btn-action-print");
             if (btnPrint) btnPrint.addEventListener("click", cetakStrukBawaanBrowser);
             
@@ -8793,12 +8898,11 @@
             const btnWa = document.getElementById("btn-action-wa");
             if (btnWa) btnWa.addEventListener("click", shareOtomatisPilihAplikasi);
 
-            // Navigasi Paginasi Produk
             document.getElementById("btn-prev-page").addEventListener("click", () => {
                 if (currentProductPage > 1) {
                     currentProductPage--;
                     renderProducts();
-                    window.scrollTo({ top: 0, behavior: 'smooth' }); // Scroll ke atas saat ganti halaman
+                    window.scrollTo({ top: 0, behavior: 'smooth' }); 
                 }
             });
 
@@ -8808,7 +8912,6 @@
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             });
 
-            // Reset ke halaman 1 saat user mencari atau menyortir produk
             document.getElementById("product-search").addEventListener("input", () => {
                 currentProductPage = 1;
                 renderProducts();
@@ -8819,23 +8922,16 @@
             });
         }
 
-        // ==========================================
-        // FUNGSI BARU STRUK UNTUK WEB
-        // ==========================================
-
         async function getStrukCanvas() {
             const el = document.getElementById("struk-capture-area");
             return await html2canvas(el, { scale: 2, backgroundColor: "#ffffff" });
         }
 
-        // 1. FITUR CETAK (Gunakan Print Bawaan Browser, lebih kompatibel)
         function cetakStrukBawaanBrowser() {
             showToast("Membuka menu cetak...");
             window.print(); 
-            // CSS @media print di atas sudah diset agar HANYA struk yang ter-print.
         }
 
-        // 2. FITUR SIMPAN GAMBAR (Otomatis terdownload sebagai JPG)
         async function simpanGambarOtomatis() {
             try {
                 showToast("Menyiapkan file gambar...");
@@ -8850,7 +8946,6 @@
             }
         }
 
-        // 3. FITUR SHARE / WA (Muncul popup pilihan aplikasi pakai navigator.share)
         async function shareOtomatisPilihAplikasi() {
             try {
                 showToast("Menyiapkan struk...");
@@ -8859,7 +8954,6 @@
                     if (!blob) { showToast("Gagal memproses gambar."); return; }
                     const file = new File([blob], "Struk_Maryn.jpg", { type: "image/jpeg" });
 
-                    // Cek apakah browser mendukung Web Share API untuk File (sebagian besar Chrome/Safari Android 14+ dukung)
                     if (navigator.canShare && navigator.canShare({ files: [file] })) {
                         await navigator.share({
                             title: 'Struk Transaksi',
@@ -8867,27 +8961,20 @@
                             files: [file]
                         });
                     } else if (navigator.share) {
-                        // Jika gambar tidak didukung, share teks murni
                         const text = document.getElementById("struk-content").textContent;
                         await navigator.share({
                             title: 'Struk Transaksi',
                             text: text
                         });
                     } else {
-                        // Fallback aman jika browser tidak mendukung Web Share sama sekali (misal PC lama)
                         const text = encodeURIComponent(document.getElementById("struk-content").textContent);
                         window.location.href = "https://wa.me/?text=" + text;
                     }
                 }, "image/jpeg", 1.0);
             } catch (e) {
-                // Jangan tampilkan error jika user klik "cancel" saat pop up share muncul
                 if(e.name !== 'AbortError') showToast("Gagal share: " + e.message);
             }
         }
-
-        // ==========================================
-        // FUNGSI LAINNYA
-        // ==========================================
 
         function startScanner(targetInputId) {
             document.getElementById("modal-scanner").classList.add("active");
@@ -8913,16 +9000,11 @@
 
             if (savedTheme === "dark") {
                 document.documentElement.setAttribute("data-theme", "dark");
-                metaThemeColor.setAttribute("content", "#210e15"); // Warna Dark
+                metaThemeColor.setAttribute("content", "#0d0508"); 
             } else {
-                metaThemeColor.setAttribute("content", "#f5e6ea"); // Warna Light
+                metaThemeColor.setAttribute("content", "#fdf5f7"); 
             }
 
-            
-            //localStorage.removeItem("maryn_fees"); 
-            //localStorage.removeItem("maryn_products");
-            //localStorage.removeItem("maryn_transactions");
-            
             loadSettingsToForm();
             setupFeeSearch();
             renderProducts();
@@ -8979,7 +9061,6 @@
             }
         }
 
-        // Sisanya adalah fungsi kalkulasi & render yang tidak ada masalah (tetap sama)
         function updateDashboard() {
             const salesEl = document.getElementById("dash-sales");
             if (!salesEl) return;
@@ -9016,7 +9097,7 @@
 
         function formatRupiah(n) { return "Rp " + Math.round(n || 0).toLocaleString("id-ID"); }
 
-    function renderDashboardTx() {
+        function renderDashboardTx() {
             const list = document.getElementById("dash-tx-list");
             if (!list) return;
             const now = new Date();
@@ -9048,13 +9129,13 @@
                 const platformBadgeHtml = isIncome ? `<span class="tx-badge platform">${platformName}</span>` : "";
 
                 return `
-                <div class="tx-card" style="margin-bottom: 10px;">
+                <div class="tx-card">
                     <div class="tx-card-header">
                         <div class="tx-badges">
                             <span class="tx-badge ${isIncome ? 'income' : 'expense'}">${isIncome ? 'Penjualan' : 'Belanja'}</span>
                             ${platformBadgeHtml}
                         </div>
-                        <div class="tx-amount ${isIncome ? 'income' : 'expense'}" style="font-size: 15px;">
+                        <div class="tx-amount ${isIncome ? 'income' : 'expense'}">
                             ${isIncome ? '+' : '-'}${formatRupiah(tx.total)}
                         </div>
                     </div>
@@ -9063,7 +9144,7 @@
                         ${itemsListHtml}
                     </div>
                     
-                    <div class="tx-card-footer" style="padding-top: 6px;">
+                    <div class="tx-card-footer">
                         <div class="tx-date-modern">📅 ${formatDate(tx.date)}</div>
                     </div>
                 </div>`;
@@ -9074,7 +9155,6 @@
             const list = document.getElementById("dash-top-items");
             if (!list) return;
 
-            // 1. Filter dan hitung jumlah barang terjual
             const now = new Date();
             const filtered = transactions.filter(tx => {
                 if (tx.type !== "penjualan") return false;
@@ -9092,12 +9172,10 @@
                 });
             });
 
-            // 2. Sortir ambil top 3
             const sorted = Object.entries(itemCounts)
                 .sort((a, b) => b[1] - a[1])
                 .slice(0, 3);
 
-            // 3. Render ke HTML
             if (sorted.length === 0) {
                 list.innerHTML = '<div style="text-align:center; color:var(--text-tert); font-size:12px; padding:10px;">Belum ada data barang terjual</div>';
                 return;
@@ -9117,30 +9195,27 @@
             }).join("") + `</div>`;
         }
 
-let promoScrollInterval; // Variabel penyimpan animasi berjalan
+        let promoScrollInterval; 
 
         function startPromoAutoScroll() {
             const scrollEl = document.getElementById("dash-promo-list");
             if(!scrollEl) return;
             clearInterval(promoScrollInterval);
             
-            // Animasi geser pelan-pelan
             promoScrollInterval = setInterval(() => {
                 if(scrollEl.scrollLeft >= (scrollEl.scrollWidth - scrollEl.clientWidth - 1)) {
-                    scrollEl.scrollLeft = 0; // Balik ke awal kalau sudah mentok ujung
+                    scrollEl.scrollLeft = 0; 
                 } else {
-                    scrollEl.scrollLeft += 1; // Kecepatan scroll (1 pixel)
+                    scrollEl.scrollLeft += 1; 
                 }
-            }, 30); // Berjalan setiap 30 milidetik
+            }, 30); 
 
-            // Hentikan saat pengguna menyentuh/menggeser manual
             scrollEl.addEventListener("mouseenter", () => clearInterval(promoScrollInterval));
             scrollEl.addEventListener("touchstart", () => clearInterval(promoScrollInterval), {passive: true});
             
-            // Lanjut berjalan otomatis saat dilepas
             scrollEl.addEventListener("mouseleave", startPromoAutoScroll);
             scrollEl.addEventListener("touchend", () => {
-                setTimeout(startPromoAutoScroll, 2000); // Tunggu 2 detik sebelum jalan lagi
+                setTimeout(startPromoAutoScroll, 2000); 
             }, {passive: true});
         }
 
@@ -9166,10 +9241,8 @@ let promoScrollInterval; // Variabel penyimpan animasi berjalan
             section.style.display = "block";
             
             const renderCard = (p) => {
-                // Background abu-abu jika tidak ada gambar
                 const imgStr = p.photo ? `<img src="${p.photo}" class="promo-img">` : `<div class="promo-img" style="display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--text-quat);background:#f5f5f5;">No Image</div>`;
                 
-                // Format tgl misal: "15 Jul - 31 Jul"
                 const dStart = new Date(p.promoStartDate);
                 const startStr = String(dStart.getDate()).padStart(2, '0') + '/' + String(dStart.getMonth() + 1).padStart(2, '0');
                 const dEnd = new Date(p.promoEndDate);
@@ -9188,26 +9261,22 @@ let promoScrollInterval; // Variabel penyimpan animasi berjalan
                         <div class="promo-progress-bar"></div>
                         <span class="promo-progress-text">⏳ ${startStr} - ${endStr}</span>
                     </div>
-                    <div style="font-size:9px; color:var(--text-tert); margin-top:4px; display:flex; align-items:center; gap:2px;">
+                    <div style="font-size:10px; color:var(--text-tert); font-weight: 600; margin-top:6px; display:flex; align-items:center; gap:4px;">
                         🏢 ${escapeHtml(p.supplier || "-")}
                     </div>
                 </div>`;
             };
 
-            // Masukkan ke carousel Home
             list.innerHTML = promoProducts.map(renderCard).join("");
             
-            // Masukkan juga ke Modal "Lihat Semua"
             const allList = document.getElementById("all-promo-list");
             if(allList) {
                 allList.innerHTML = promoProducts.map((p) => `<div>${renderCard(p)}</div>`).join("");
             }
 
-            // Jalankan animasi auto-scroll!
             startPromoAutoScroll();
         }
         
-        // Daftarkan event listener untuk tombol lihat semua
         document.getElementById("btn-all-promo")?.addEventListener("click", () => {
             document.getElementById("modal-promo-all").classList.add("active");
         });
@@ -9225,12 +9294,12 @@ let promoScrollInterval; // Variabel penyimpan animasi berjalan
                 transactions.forEach((tx) => { if (tx.type === "penjualan" && new Date(tx.date).toDateString() === d.toDateString()) sum += tx.total; });
                 data.push(sum);
             }
-            const max = Math.max(...data, 1), w = 400, h = 140, pad = 20, barW = (w - pad * 2) / days - 8;
+            const max = Math.max(...data, 1), w = 400, h = 180, pad = 25, barW = (w - pad * 2) / days - 10;
             let bars = "";
             data.forEach((v, i) => {
-                const bh = (v / max) * (h - pad * 2), x = pad + i * ((w - pad * 2) / days) + 4, y = h - pad - bh;
+                const bh = (v / max) * (h - pad * 2), x = pad + i * ((w - pad * 2) / days) + 5, y = h - pad - bh;
                 const dayLabel = new Date(); dayLabel.setDate(dayLabel.getDate() - (days - 1 - i));
-                bars += '<rect x="' + x + '" y="' + y + '" width="' + barW + '" height="' + bh + '" rx="4" fill="#007aff" opacity="0.8"/><text x="' + (x + barW / 2) + '" y="' + (h - 5) + '" text-anchor="middle" font-size="9" fill="var(--text-tert)">' + dayLabel.getDate() + "</text>";
+                bars += '<rect x="' + x + '" y="' + y + '" width="' + barW + '" height="' + bh + '" rx="6" fill="var(--accent)" opacity="0.9"/><text x="' + (x + barW / 2) + '" y="' + (h - 8) + '" text-anchor="middle" font-size="10" font-weight="700" fill="var(--text-tert)">' + dayLabel.getDate() + "</text>";
             });
             svg.innerHTML = bars;
         }
@@ -9245,8 +9314,8 @@ let promoScrollInterval; // Variabel penyimpan animasi berjalan
                 function renderList(query) {
                     const fees = feeCategories[plat] || [];
                     const filtered = fees.filter(f => f.name.toLowerCase().includes(query.toLowerCase()));
-                    if (filtered.length === 0) dropdown.innerHTML = '<div style="padding:10px; font-size:11px; color:var(--text-tert); text-align:center;">Kategori tidak ditemukan</div>';
-                    else dropdown.innerHTML = filtered.map(f => `<div class="fee-search-item" data-id="${f.id}" data-name="${escapeHtml(f.name)}" data-fee="${f.fee}" style="padding:10px 12px; border-bottom:1px solid var(--border-color); cursor:pointer; font-size:11px; color:var(--text); line-height:1.4;"><span style="color:var(--accent); font-weight:800;">${f.fee}%</span> &middot; ${escapeHtml(f.name)}</div>`).join('');
+                    if (filtered.length === 0) dropdown.innerHTML = '<div style="padding:10px; font-size:12px; color:var(--text-tert); text-align:center;">Kategori tidak ditemukan</div>';
+                    else dropdown.innerHTML = filtered.map(f => `<div class="fee-search-item" data-id="${f.id}" data-name="${escapeHtml(f.name)}" data-fee="${f.fee}" style="padding:12px 14px; border-bottom:1px solid var(--border-color); cursor:pointer; font-size:12px; font-weight:600; color:var(--text); line-height:1.4;"><span style="color:var(--accent); font-weight:800;">${f.fee}%</span> &middot; ${escapeHtml(f.name)}</div>`).join('');
                 }
 
                 displayInput.addEventListener("focus", () => { renderList(displayInput.value); dropdown.style.display = "block"; });
@@ -9276,16 +9345,13 @@ let promoScrollInterval; // Variabel penyimpan animasi berjalan
             const search = (document.getElementById("product-search")?.value || "").toLowerCase();
             const sort = document.getElementById("product-sort")?.value || "newest";
             
-            // 1. Filter Data Berdasarkan Pencarian
             let filtered = products.filter((p) => p.name.toLowerCase().includes(search) || (p.barcode || "").toLowerCase().includes(search));
             
-            // 2. Sorting Data
             if (sort === "az") filtered.sort((a, b) => a.name.localeCompare(b.name));
             if (sort === "za") filtered.sort((a, b) => b.name.localeCompare(a.name));
             if (sort === "newest") filtered.sort((a, b) => b.createdAt - a.createdAt);
             if (sort === "oldest") filtered.sort((a, b) => a.createdAt - b.createdAt);
 
-            // 3. Update Teks "Total Produk"
             if (totalInfo) {
                 if (search) {
                     totalInfo.innerHTML = `Ditemukan: <b style="color: var(--accent)">${filtered.length}</b> dari <b style="color: var(--text)">${products.length}</b> total produk`;
@@ -9294,7 +9360,6 @@ let promoScrollInterval; // Variabel penyimpan animasi berjalan
                 }
             }
 
-            // 4. Logika Paginasi (Maksimal 100 per halaman)
             const totalPages = Math.ceil(filtered.length / productsPerPage) || 1;
             if (currentProductPage > totalPages) currentProductPage = totalPages;
 
@@ -9302,22 +9367,19 @@ let promoScrollInterval; // Variabel penyimpan animasi berjalan
                 paginationDiv.style.display = totalPages > 1 ? "flex" : "none";
                 pageIndicator.textContent = `Halaman ${currentProductPage} / ${totalPages}`;
                 
-                // Disable/Enable tombol
                 prevBtn.disabled = currentProductPage === 1;
                 nextBtn.disabled = currentProductPage === totalPages;
                 prevBtn.style.opacity = currentProductPage === 1 ? "0.4" : "1";
                 nextBtn.style.opacity = currentProductPage === totalPages ? "0.4" : "1";
             }
 
-            // Memotong array menjadi per 100 data sesuai halaman
             const paginatedProducts = filtered.slice((currentProductPage - 1) * productsPerPage, currentProductPage * productsPerPage);
 
             if (paginatedProducts.length === 0) {
-                list.innerHTML = '<div style="text-align:center; color:var(--text-tert); font-size:12px; padding:20px;">Produk tidak ditemukan</div>';
+                list.innerHTML = '<div style="text-align:center; color:var(--text-tert); font-size:13px; font-weight:600; padding:30px;">Produk tidak ditemukan</div>';
                 return;
             }
 
-            // 5. Tampilkan ke HTML
             list.innerHTML = paginatedProducts.map((p) => {
                 const pricesHtml = [];
                 ["shopee", "lazada", "blibli", "tiktok"].forEach(platform => {
@@ -9325,27 +9387,27 @@ let promoScrollInterval; // Variabel penyimpan animasi berjalan
                     if (sellPrice) {
                         const netPrice = calculateNetPrice(p, platform);
                         const profit = calculateProfit(p, platform);
-                        let tagColor = "#ee4d2d"; let bgLight = "rgba(238, 77, 45, 0.12)";
-                        if (platform === "lazada") { tagColor = "#a128e6"; bgLight = "rgba(161, 40, 230, 0.12)"; } 
-                        if (platform === "blibli") { tagColor = "#0096ff"; bgLight = "rgba(0, 150, 255, 0.12)"; }
-                        if (platform === "tiktok") { tagColor = "var(--text)"; bgLight = "rgba(142, 142, 147, 0.15)"; }
+                        let tagColor = "var(--chart2)"; let bgLight = "var(--bg)";
+                        if (platform === "lazada") { tagColor = "var(--chart1)"; } 
+                        if (platform === "blibli") { tagColor = "var(--chart3)"; }
+                        if (platform === "tiktok") { tagColor = "var(--text)"; }
                         const platName = platform.charAt(0).toUpperCase() + platform.slice(1);
                         pricesHtml.push(
-                            `<div style="background:${bgLight}; border-left:3px solid ${tagColor}; padding:6px 8px; border-radius:0 6px 6px 0; font-size:10px; color:var(--text);">
-                                <div style="font-weight:800; font-size:11px; color:${tagColor}; margin-bottom:4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${platName}: ${formatRupiah(sellPrice)}</div>
+                            `<div style="background:${bgLight}; border: 1px solid var(--border-color); border-left:4px solid ${tagColor}; padding:8px 10px; border-radius:8px; font-size:11px; color:var(--text);">
+                                <div style="font-weight:800; font-size:12px; color:${tagColor}; margin-bottom:4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${platName}: ${formatRupiah(sellPrice)}</div>
                                 <div style="display:flex; justify-content:space-between; margin-bottom:2px;"><span style="color:var(--text-sec);">Hasil:</span><span style="font-weight:700;">${formatRupiah(netPrice)}</span></div>
-                                <div style="display:flex; justify-content:space-between;"><span style="color:var(--text-sec);">Profit:</span><span style="font-weight:700; color:var(--positive);">${formatRupiah(profit)}</span></div>
+                                <div style="display:flex; justify-content:space-between;"><span style="color:var(--text-sec);">Profit:</span><span style="font-weight:800; color:var(--positive);">${formatRupiah(profit)}</span></div>
                             </div>`
                         );
                     }
                 });
                 return (
                     '<div class="product-item" data-id="' + p.id + '" style="align-items:flex-start;">' +
-                    '<div class="product-img">' + (p.photo ? '<img src="' + p.photo + '" style="width:100%;height:100%;object-fit:cover;border-radius:10px">' : "IMG") + "</div>" +
+                    '<div class="product-img">' + (p.photo ? '<img src="' + p.photo + '" style="width:100%;height:100%;object-fit:cover;border-radius:14px">' : "IMG") + "</div>" +
                     '<div class="product-info" style="width:100%;">' +
-                    '<div class="product-name" style="font-size:14px;">' + escapeHtml(p.name) + "</div>" +
+                    '<div class="product-name">' + escapeHtml(p.name) + "</div>" +
                     '<div class="product-meta">' + escapeHtml(p.barcode || "") + " &middot; Modal: <b>" + formatRupiah(p.modal) + "</b> &middot; Stok: <b style='color: " + ((p.stock || 0) <= 3 ? "var(--danger)" : "var(--positive)") + "'>" + (p.stock || 0) + "</b> &middot; " + escapeHtml(p.supplier || "") + "</div>" +
-                    '<div class="product-prices" style="display:grid; grid-template-columns: repeat(2, 1fr); gap:6px; margin-top:8px;">' + pricesHtml.join("") + "</div>" +
+                    '<div class="product-prices">' + pricesHtml.join("") + "</div>" +
                     "</div></div>"
                 );
             }).join("");
@@ -9386,7 +9448,6 @@ let promoScrollInterval; // Variabel penyimpan animasi berjalan
             const promoEnd = document.getElementById("prod-promo-end")?.value;
             const markup = parseFloat(document.getElementById("prod-markup")?.value) || 0;
             
-            // Logika pakai harga promo jika valid hari ini
             let activeModal = rawModal;
             if (promoModal && promoStart && promoEnd) {
                 const now = new Date(); now.setHours(0,0,0,0);
@@ -9438,7 +9499,7 @@ let promoScrollInterval; // Variabel penyimpan animasi berjalan
             const p = products.find((x) => x.id === id);
             if (!p) return;
             editingProductId = id;
-            document.getElementById("product-modal-title").textContent = "Edit Produk";
+            document.getElementById("product-modal-title").textContent = "✎ Edit Produk";
             document.getElementById("prod-barcode").value = p.barcode || "";
             document.getElementById("prod-name").value = p.name || "";
             document.getElementById("prod-modal").value = p.modal || "";
@@ -9569,26 +9630,20 @@ let promoScrollInterval; // Variabel penyimpan animasi berjalan
             closeModal("modal-settings"); showToast("Pengaturan disimpan!"); renderProducts();
         }
 
-
         function toggleTheme() {
             const html = document.documentElement;
             const metaThemeColor = document.querySelector('meta[name="theme-color"]');
             
             if (html.getAttribute("data-theme") === "dark") {
-                // Berpindah ke Light Mode
                 html.removeAttribute("data-theme");
                 localStorage.setItem("maryn_theme", "light");
-                // Warna background light mode Anda adalah #f5e6ea
-                metaThemeColor.setAttribute("content", "#f5e6ea");
+                metaThemeColor.setAttribute("content", "#fdf5f7");
             } else {
-                // Berpindah ke Dark Mode
                 html.setAttribute("data-theme", "dark");
                 localStorage.setItem("maryn_theme", "dark");
-                // Warna background dark mode Anda adalah #210e15
-                metaThemeColor.setAttribute("content", "#210e15");
+                metaThemeColor.setAttribute("content", "#0d0508");
             }
         }
-
 
         function renderBukuList(tab) {
             const list = document.getElementById("buku-list");
@@ -9604,7 +9659,7 @@ let promoScrollInterval; // Variabel penyimpan animasi berjalan
             }).sort((a, b) => new Date(b.date) - new Date(a.date));
 
             if (filtered.length === 0) {
-                list.innerHTML = '<div style="text-align:center; color:var(--text-tert); font-size:12px; padding:20px;">Tidak ada data transaksi</div>';
+                list.innerHTML = '<div style="text-align:center; color:var(--text-tert); font-size:13px; font-weight:600; padding:30px;">Tidak ada data transaksi</div>';
                 return;
             }
 
@@ -9612,7 +9667,6 @@ let promoScrollInterval; // Variabel penyimpan animasi berjalan
                 const isIncome = tx.type === "penjualan";
                 const platformName = tx.platform ? tx.platform : "Toko / Offline";
                 
-                // Menyusun daftar item barang ke dalam kotak rapi
                 const itemsListHtml = tx.items.map(i => 
                     `<div class="tx-detail-item">
                         <span class="tx-detail-name">${escapeHtml(i.name)}</span>
@@ -9629,7 +9683,7 @@ let promoScrollInterval; // Variabel penyimpan animasi berjalan
                             <span class="tx-badge ${isIncome ? 'income' : 'expense'}">${isIncome ? 'Penjualan' : 'Belanja'}</span>
                             ${platformBadgeHtml}
                         </div>
-                        <div class="tx-amount ${isIncome ? 'income' : 'expense'}" style="font-size: 15px;">
+                        <div class="tx-amount ${isIncome ? 'income' : 'expense'}">
                             ${isIncome ? '+' : '-'}${formatRupiah(tx.total)}
                         </div>
                     </div>
@@ -9641,7 +9695,7 @@ let promoScrollInterval; // Variabel penyimpan animasi berjalan
                     <div class="tx-card-footer">
                         <div class="tx-date-modern">📅 ${formatDate(tx.date)}</div>
                         <div class="tx-actions-modern">
-                            ${isIncome ? `<button class="btn-action-sm primary btn-print-tx" data-id="${tx.id}">Buka Struk</button>` : `<button class="btn-action-sm primary btn-print-tx" data-id="${tx.id}">Buka Nota</button>`}
+                            ${isIncome ? `<button class="btn-action-sm primary btn-print-tx" data-id="${tx.id}">Struk</button>` : `<button class="btn-action-sm primary btn-print-tx" data-id="${tx.id}">Nota</button>`}
                             <button class="btn-action-sm btn-edit-tx" data-id="${tx.id}">Edit</button>
                             <button class="btn-action-sm danger btn-delete-tx" data-id="${tx.id}">Hapus</button>
                         </div>
@@ -9717,7 +9771,7 @@ let promoScrollInterval; // Variabel penyimpan animasi berjalan
             let total = 0;
             list.innerHTML = currentTxItems.map((item, i) => {
                 const subtotal = item.qty * item.price; total += subtotal;
-                return ('<div class="item-row" data-tx-index="' + i + '"><div><div class="item-row-name">' + escapeHtml(item.name) + '</div><div class="item-row-qty">Qty: ' + item.qty + '</div></div><div style="display:flex;align-items:center;gap:10px"><div class="item-row-price">' + formatRupiah(subtotal) + '</div><button class="btn btn-danger btn-sm btn-remove-item" data-index="' + i + '">Hapus</button></div></div>');
+                return ('<div class="item-row" data-tx-index="' + i + '"><div><div class="item-row-name">' + escapeHtml(item.name) + '</div><div class="item-row-qty">Qty: ' + item.qty + '</div></div><div style="display:flex;align-items:center;gap:12px"><div class="item-row-price">' + formatRupiah(subtotal) + '</div><button class="btn btn-danger btn-sm btn-remove-item" style="border-radius:10px;" data-index="' + i + '">Hapus</button></div></div>');
             }).join("");
             document.getElementById("tx-total").textContent = formatRupiah(total);
             list.querySelectorAll(".btn-remove-item").forEach((btn) => {
@@ -9856,7 +9910,7 @@ let promoScrollInterval; // Variabel penyimpan animasi berjalan
             if(!list) return;
             const filtered = (feeCategories[platform] || []).filter((f) => f.name.toLowerCase().includes(search));
             list.innerHTML = filtered.map((f) => {
-                return ('<div class="tx-item"><div class="tx-left"><span class="tx-name">' + escapeHtml(f.name) + '</span><span class="tx-date">Biaya admin: ' + f.fee + '%</span></div><div class="tx-right"><span style="font-size:11px;color:var(--text-tert)">Fee</span></div></div>');
+                return ('<div class="tx-item"><div class="tx-left"><span class="tx-name">' + escapeHtml(f.name) + '</span><span class="tx-date">Biaya admin: ' + f.fee + '%</span></div><div class="tx-right"><span style="font-size:12px; font-weight: 700; color:var(--accent);">Fee</span></div></div>');
             }).join("");
         }
 
@@ -9877,9 +9931,6 @@ let promoScrollInterval; // Variabel penyimpan animasi berjalan
             }
         }
 
-
-        
-        // Kalkulator Biasa
         function hitungBiasa() {
             const input = document.getElementById('calc-input').value;
             try { 
@@ -9889,43 +9940,49 @@ let promoScrollInterval; // Variabel penyimpan animasi berjalan
             }
         }
 
-        // Simulasi Admin
         function cariAdminSim() {
-            const filter = document.getElementById('sim-search-admin').value.toLowerCase();
-            const select = document.getElementById('sim-select-admin');
-            for (let i = 0; i < select.options.length; i++) {
-                const txt = select.options[i].text.toLowerCase();
-                select.options[i].style.display = txt.includes(filter) ? "block" : "none";
+            const platform = document.getElementById('sim-platform').value;
+            const query = document.getElementById('sim-search-admin').value.toLowerCase();
+            const dropdown = document.getElementById('sim-drop-admin');
+            const hiddenInput = document.getElementById('sim-selected-fee');
+            
+            hiddenInput.value = "0";
+            hitungSimulasi();
+
+            if (!query) {
+                dropdown.style.display = "none";
+                return;
             }
+
+            const fees = feeCategories[platform] || [];
+            const filtered = fees.filter(f => f.name.toLowerCase().includes(query));
+
+            if (filtered.length === 0) {
+                dropdown.innerHTML = '<div style="padding:10px; font-size:12px; font-weight: 600; color:var(--text-tert); text-align:center;">Kategori tidak ditemukan</div>';
+            } else {
+                dropdown.innerHTML = filtered.map(f => 
+                    `<div class="sim-fee-item" data-fee="${f.fee}" data-name="${escapeHtml(f.name)}" style="padding:12px 14px; border-bottom:1px solid var(--border-color); cursor:pointer; font-size:12px; font-weight:600; color:var(--text); line-height:1.4;"><span style="color:var(--accent); font-weight:800;">${f.fee}%</span> &middot; ${escapeHtml(f.name)}</div>`
+                ).join('');
+            }
+            dropdown.style.display = "block";
         }
 
-        // Perhitungan Otomatis
-        function hitungSimulasi() {
-            const ha = parseFloat(document.getElementById('sim-modal').value) || 0;
-            const bp = parseFloat(document.getElementById('sim-proses').value) || 0;
-            const px = (parseFloat(document.getElementById('sim-promo').value) || 0) / 100;
-            const af = (parseFloat(document.getElementById('sim-select-admin').value) || 0) / 100;
-            const pr = (parseFloat(document.getElementById('sim-premi').value) || 0) / 100;
-            const vc = parseFloat(document.getElementById('sim-voucher').value) || 0;
-            const mu = (parseFloat(document.getElementById('sim-markup').value) || 0) / 100;
+        document.addEventListener("click", function(e) {
+            const simItem = e.target.closest(".sim-fee-item");
+            if (simItem) {
+                document.getElementById('sim-search-admin').value = simItem.dataset.name + " (" + simItem.dataset.fee + "%)";
+                document.getElementById('sim-selected-fee').value = simItem.dataset.fee;
+                document.getElementById('sim-drop-admin').style.display = "none";
+                hitungSimulasi();
+            }
+            
+            const simSearch = document.getElementById('sim-search-admin');
+            const simDrop = document.getElementById('sim-drop-admin');
+            if (simSearch && simDrop && e.target !== simSearch && !simDrop.contains(e.target)) {
+                simDrop.style.display = "none";
+            }
+        });
 
-            const hargaJual = Math.round(ha * (1 + mu));
-            const totalPotongan = (ha * px) + (ha * af) + (ha * pr) + vc + bp;
-            const hasilAkhir = Math.round(hargaJual - totalPotongan);
-            const profitBersih = hasilAkhir - ha;
-
-            document.getElementById('out-jual').innerText = "Rp " + hargaJual.toLocaleString('id-ID');
-            document.getElementById('out-saldo').innerText = "Rp " + hasilAkhir.toLocaleString('id-ID');
-            document.getElementById('out-profit').innerText = "Rp " + profitBersih.toLocaleString('id-ID');
-        }
-
-        // ==========================================
-        // LOGIKA KALKULATOR FEE SIMULASI
-        // ==========================================
-
-        // ==========================================
-        // LOGIKA KALKULATOR STANDAR
-        // ==========================================
         let calcInput = "";
 
         function updateCalcDisplay() {
@@ -9933,7 +9990,7 @@ let promoScrollInterval; // Variabel penyimpan animasi berjalan
         }
 
         function appendCalc(val) {
-            if (calcInput === "Error") calcInput = ""; // Reset kalau error
+            if (calcInput === "Error") calcInput = ""; 
             calcInput += val;
             updateCalcDisplay();
         }
@@ -9952,11 +10009,9 @@ let promoScrollInterval; // Variabel penyimpan animasi berjalan
         function calculateCalc() {
             try {
                 if (!calcInput) return;
-                // Mengganti % menjadi /100 untuk kalkulasi
                 let formula = calcInput.replace(/%/g, '/100'); 
                 let result = eval(formula);
                 
-                // Membersihkan angka desimal yang terlalu panjang
                 if (result % 1 !== 0) {
                     result = parseFloat(result.toFixed(6)); 
                 }
@@ -9969,7 +10024,6 @@ let promoScrollInterval; // Variabel penyimpan animasi berjalan
             }
         }
 
-        // Reset kolom pencarian saat ganti platform (misal dari Shopee ke TikTok)
         function resetSimAdmin() {
             document.getElementById('sim-search-admin').value = "";
             document.getElementById('sim-selected-fee').value = "0";
@@ -9977,56 +10031,6 @@ let promoScrollInterval; // Variabel penyimpan animasi berjalan
             hitungSimulasi();
         }
 
-        // Fitur Cari dari Database Raw Fee
-        function cariAdminSim() {
-            const platform = document.getElementById('sim-platform').value;
-            const query = document.getElementById('sim-search-admin').value.toLowerCase();
-            const dropdown = document.getElementById('sim-drop-admin');
-            const hiddenInput = document.getElementById('sim-selected-fee');
-            
-            // Reset nilai fee jadi 0 jika user ngetik ulang agar perhitungan menyesuaikan
-            hiddenInput.value = "0";
-            hitungSimulasi();
-
-            if (!query) {
-                dropdown.style.display = "none";
-                return;
-            }
-
-            // Mengambil data dari variabel feeCategories bawaan sistem Anda
-            const fees = feeCategories[platform] || [];
-            const filtered = fees.filter(f => f.name.toLowerCase().includes(query));
-
-            if (filtered.length === 0) {
-                dropdown.innerHTML = '<div style="padding:10px; font-size:11px; color:var(--text-tert); text-align:center;">Kategori tidak ditemukan</div>';
-            } else {
-                dropdown.innerHTML = filtered.map(f => 
-                    `<div class="sim-fee-item" data-fee="${f.fee}" data-name="${escapeHtml(f.name)}" style="padding:10px 12px; border-bottom:1px solid var(--border-color); cursor:pointer; font-size:11px; color:var(--text); line-height:1.4;"><span style="color:var(--accent); font-weight:800;">${f.fee}%</span> &middot; ${escapeHtml(f.name)}</div>`
-                ).join('');
-            }
-            dropdown.style.display = "block";
-        }
-
-        // Deteksi saat dropdown diklik (Event Delegation)
-        document.addEventListener("click", function(e) {
-            // Menangani saat user memilih kategori fee dari dropdown simulasi
-            const simItem = e.target.closest(".sim-fee-item");
-            if (simItem) {
-                document.getElementById('sim-search-admin').value = simItem.dataset.name + " (" + simItem.dataset.fee + "%)";
-                document.getElementById('sim-selected-fee').value = simItem.dataset.fee;
-                document.getElementById('sim-drop-admin').style.display = "none";
-                hitungSimulasi();
-            }
-            
-            // Sembunyikan dropdown jika klik area luar
-            const simSearch = document.getElementById('sim-search-admin');
-            const simDrop = document.getElementById('sim-drop-admin');
-            if (simSearch && simDrop && e.target !== simSearch && !simDrop.contains(e.target)) {
-                simDrop.style.display = "none";
-            }
-        });
-
-        // Perhitungan Algoritma Harga POS Maryn
         function hitungSimulasi() {
             const ha = parseFloat(document.getElementById('sim-modal').value) || 0;
             const bp = parseFloat(document.getElementById('sim-proses').value) || 0;
@@ -10036,13 +10040,12 @@ let promoScrollInterval; // Variabel penyimpan animasi berjalan
             const vc = parseFloat(document.getElementById('sim-voucher').value) || 0;
             const mu = (parseFloat(document.getElementById('sim-markup').value) || 0) / 100;
 
-            // Formula POS (Sama persis dengan kalkulasi "calculateSellPrice" di sistem utama)
             const basePrice = ha * (1 + mu);
             const totalPersen = af + px + pr;
             const totalNominal = bp + vc;
 
             if (totalPersen >= 1) {
-                document.getElementById('out-jual').innerText = "Fee % terlalu tinggi!";
+                document.getElementById('out-jual').innerText = "Fee % tinggi!";
                 return;
             }
 
@@ -10055,7 +10058,6 @@ let promoScrollInterval; // Variabel penyimpan animasi berjalan
             document.getElementById('out-profit').innerText = "Rp " + profitBersih.toLocaleString('id-ID');
         }
 
-        // Panggil sekali agar default value 15.000 dkk terhitung saat halaman dimuat
         setTimeout(hitungSimulasi, 500);
     </script>
 </body>
